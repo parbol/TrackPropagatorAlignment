@@ -31,7 +31,7 @@ class Tracker:
                     x.append(i * np.cos(th))
                     y.append(i * np.sin(th))
                     z.append(zpa)
-                ax1.plot3D(x, z, y, fmtb)
+                ax1.plot3D(x, z, y, fmtb, alpha=0.2)
         
         for zpa in self.z:
             for i in self.ri:
@@ -42,7 +42,7 @@ class Tracker:
                     x.append(i * np.cos(th))
                     y.append(i * np.sin(th))
                     z.append(zpa)
-                ax1.plot3D(x, z, y, fmte, alpha=0.5)
+                ax1.plot3D(x, z, y, fmte, alpha=0.2)
                     
         for i in self.ri:
             xt = []
@@ -102,18 +102,21 @@ class Tracker:
         x2_c = np.zeros(rootx.shape)
         y1_c = np.zeros(rootx.shape)
         y2_c = np.zeros(rootx.shape)
-        t = []
+        tbarrel = []
         for j, troot in enumerate(rootx):
             if rootx[j] < 0:
                 if rooty[j] < 0:
-                    raise ValueError('Problem with one intersection')
+                    #raise ValueError('Problem with one intersection')
+                    continue
                 else:       
                     y1_c[j] = (-by[j] - np.sqrt(rooty[j])) / (2.0 * ay)
                     y2_c[j] = (-by[j] + np.sqrt(rooty[j])) / (2.0 * ay)
                     if abs((y1_c[j] - track.y_c) / track.rt) > 1.0:
-                        raise ValueError('Problem with one intersection')
+                        #raise ValueError('Problem with one intersection')
+                        continue
                     if abs((y2_c[j] - track.y_c) / track.rt) > 1.0:
-                        raise ValueError('Problem with one intersection')
+                        #raise ValueError('Problem with one intersection')
+                        continue
                     t1 = 1.0 / track.w * self.convertAngle((track.phi + np.arccos((y1_c[j] - track.y_c) / track.rt)))
                     t2 = 1.0 / track.w * self.convertAngle((track.phi + np.arccos((y2_c[j] - track.y_c) / track.rt)))
                     t3 = 1.0 / track.w * self.convertAngle((track.phi - np.arccos((y1_c[j] - track.y_c) / track.rt)))
@@ -124,14 +127,16 @@ class Tracker:
                         if i > 0:
                             tv = i
                             break
-                    t.append(tv)               
+                    tbarrel.append(tv)               
             else:
                 x1_c[j] = (-bx[j] - np.sqrt(rootx[j])) / (2.0 * ax)
                 x2_c[j] = (-bx[j] + np.sqrt(rootx[j])) / (2.0 * ax)
                 if abs((x1_c[j] - track.x_c) / track.rt) > 1.0:
-                    raise ValueError('Problem with one intersection')
+                    #raise ValueError('Problem with one intersection')
+                    continue
                 if abs((x2_c[j] - track.x_c) / track.rt) > 1.0:
-                    raise ValueError('Problem with one intersection')
+                    #raise ValueError('Problem with one intersection')
+                    continue
                 t1 = 1.0 / track.w * self.convertAngle((track.phi + np.arcsin((x1_c[j] - track.x_c) / track.rt)))
                 t2 = 1.0 / track.w * self.convertAngle((track.phi + np.arcsin((x2_c[j] - track.x_c) / track.rt)))
                 t3 = 1.0 / track.w * self.convertAngle((track.phi + np.pi - np.arcsin((x1_c[j] - track.x_c) / track.rt)))
@@ -142,8 +147,34 @@ class Tracker:
                     if i > 0:
                         tv = i
                         break
-                t.append(tv)
+                tbarrel.append(tv)
+        
+        tendcapp = []
+        tendcapm = []
+        for i in self.zp:
+            tval = (track.gamma*track.m)/(30.0*track.pz)*(i-track.dz)
+            tendcapp.append(tval)
+        tendcap = tendcapp
+        if tendcapp[0] < 0:
+            for i in self.zm:
+                tval = (track.gamma*track.m)/(30.0*track.pz)*(i-track.dz)
+                tendcapm.append(tval)
+            tendcap = tendcapm
+
+        t = []
+        for tj in tbarrel:
+            if tj > tendcap[0]:
+                break
+            x, y, z = track.eval(tj)
+            if z < self.centre[2] + self.zsize/2.0 and z > self.centre[2] - self.zsize/2.0:
+                t.append(tj)
+        for tj in tendcap:
+            x, y, z = track.eval(tj)
+            if np.sqrt(x**2+y**2) < self.ri[-1]:
+                t.append(tj)
+
         x, y, z = track.eval(np.array(t))    
+        track.lastT = t[-1]
         return x, y, z
     
     
@@ -203,7 +234,7 @@ class Tracker:
         ax1.plot3D(x, z, y, fmt)
         ax3.plot(z, y, fmt)
     
-    def plot_meast_points(self, track, ax1, ax2, ax3, fmt = 'gx'):
+    def plot_meast_points(self, track, ax1, ax2, ax3, fmt = 'bx'):
         '''
         Plots the measured intersection points
 

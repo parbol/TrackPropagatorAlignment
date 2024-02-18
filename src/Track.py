@@ -79,7 +79,9 @@ class Track:
         self.x_c = self.rt * np.sin(phi) + self.x_cp
         self.y_c = -self.rt * np.cos(phi) + self.y_cp
         
-                
+        #Last t of the track in the tracker
+        self.lastT = 0
+
     def eval(self, t):
         
         x = self.rt * np.sin(self.w * t - self.phi) + self.x_c       
@@ -87,10 +89,10 @@ class Track:
         z = 30.0 * self.pz / (self.gamma*self.m) * t + self.dz        
         return x, y, z
 
-    def plot_track(self, ax1, ax2, ax3, fmt = 'r'):
+    def plot_track(self, ax1, ax2, ax3, fmt = 'g'):
               
         #We have all the ingredients, we just need to propagate the track for a given time
-        t = np.linspace(0, 5, 200)
+        t = np.linspace(0, self.lastT, 200)
         x, y, z = self.eval(t)
         ax1.plot3D(x, z, y, fmt)
         ax2.plot(x, y, fmt, label = 'Real track')

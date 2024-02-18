@@ -21,20 +21,19 @@ if __name__ == "__main__":
     ax3 = fig.add_subplot(1, 3, 3)
     #configuring the tracker
     layers = np.linspace(1, 100, 20)
-    layersz = np.linspace(200, 250, 10)
+    layersz = np.linspace(130, 270, 5)
     sigma_phi = 2 / layers
     sigma_z = 4 + np.zeros(len(layers))
-    tracker = Tracker(layers, layersz, sigma_phi, sigma_z, 150.0, [0,0,0])
+    tracker = Tracker(layers, layersz, sigma_phi, sigma_z, 220.0, [0,0,0])
     tracker.plot_tracker(ax1, ax2, ax3)
 
     #An example track
-    track = Track(0, 0, np.pi/2.0, 1.0, 15.0, 1.0)
+    track = Track(0, 0, np.pi/2.0, -1.7, 0.15, 1.0)
+    x, y, z = tracker.plot_intersection(track, ax1, ax2, ax3, 'g*')
     track.plot_track(ax1, ax2, ax3)
-    try: 
-        x, y, z = tracker.plot_intersection(track, ax1, ax2, ax3)
-    except ValueError as err:
-        sys.exit()
-
+    track2 = Track(0, 0, np.pi/2.0, 0.5, 1.0, 1.0)
+    x, y, z = tracker.plot_intersection(track2, ax1, ax2, ax3, 'g*')
+    track2.plot_track(ax1, ax2, ax3)
     #sys.exit()
     #meas = tracker.plot_meast_points(track)
 
