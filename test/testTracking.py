@@ -6,7 +6,7 @@ import sys
 
 from src.Tracker import Tracker
 from src.Track import Track
-
+from src.Plane import Plane
 
 
 
@@ -28,12 +28,15 @@ if __name__ == "__main__":
     tracker.plot_tracker(ax1, ax2, ax3)
 
     #An example track
-    track = Track(0, 0, np.pi/2.0, -1.7, 0.15, 1.0)
-    x, y, z = tracker.plot_intersection(track, ax1, ax2, ax3, 'g*')
-    track.plot_track(ax1, ax2, ax3)
-    track2 = Track(0, 0, np.pi/2.0, 0.5, 3.0, 1.0)
-    x, y, z = tracker.plot_intersection(track2, ax1, ax2, ax3, 'g*')
-    track2.plot_track(ax1, ax2, ax3)
+    track = Track(0, 0, np.pi/2.0, 1.7, 1000, 1.0)
+    p = Plane(0.0, 0.0, 400.0, 0.0, 0.0, 1.0)
+    print(p.intersection(track))
+
+    #x, y, z = tracker.plot_intersection(track, ax1, ax2, ax3, 'g*')
+    #track.plot_track(ax1, ax2, ax3)
+    #track2 = Track(0, 0, np.pi/2.0, 0.5, 3.0, 1.0)
+    #x, y, z = tracker.plot_intersection(track2, ax1, ax2, ax3, 'g*')
+    #track2.plot_track(ax1, ax2, ax3)
     #sys.exit()
     #meas = tracker.plot_meast_points(track)
 
