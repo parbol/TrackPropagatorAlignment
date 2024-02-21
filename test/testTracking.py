@@ -31,7 +31,7 @@ if __name__ == "__main__":
     track = Track(0, 0, np.pi/2.0, -1.7, 0.15, 1.0)
     x, y, z = tracker.plot_intersection(track, ax1, ax2, ax3, 'g*')
     track.plot_track(ax1, ax2, ax3)
-    track2 = Track(0, 0, np.pi/2.0, 0.5, 1.0, 1.0)
+    track2 = Track(0, 0, np.pi/2.0, 0.5, 3.0, 1.0)
     x, y, z = tracker.plot_intersection(track2, ax1, ax2, ax3, 'g*')
     track2.plot_track(ax1, ax2, ax3)
     #sys.exit()
