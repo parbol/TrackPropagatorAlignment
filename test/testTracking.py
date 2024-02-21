@@ -29,7 +29,7 @@ if __name__ == "__main__":
 
     #An example track
     track = Track(0, 0, np.pi/2.0, 1.7, 1000, 1.0)
-    p = Plane(0.0, 0.0, 400.0, 0.0, 0.0, 1.0)
+    p = Plane(0.0, 0.0, 400.0, 0.0, 1.0, 1.0)
     print(p.intersection(track))
 
     #x, y, z = tracker.plot_intersection(track, ax1, ax2, ax3, 'g*')

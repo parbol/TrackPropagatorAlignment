@@ -16,7 +16,6 @@ class Plane:
         self.n = self.n / s
         self.rotMatrix()
 
-
     def norm(self, v):
         return np.sqrt(v[0]**2 + v[1]**2 + v[2]**2)
     
@@ -29,15 +28,14 @@ class Plane:
         return np.arccos(self.n[2])
     
     def rotMatrix(self):
-        
         cosphi = np.cos(self.phi())
         sinphi = np.sin(self.phi())
         costheta = np.cos(self.theta())
         sintheta = np.sin(self.theta())
-        mat = [[cosphi*costheta, sinphi*costheta, -sintheta],
-               [-sinphi, cosphi, 0],
-               [cosphi*sintheta, sinphi*sintheta, costheta]]
-              
+        mat = [[cosphi*costheta, -sinphi, cosphi*sintheta],
+               [sinphi*costheta, cosphi, sinphi*sintheta],
+               [-sintheta, 0.0, costheta]]
+       
         self.rot = np.asmatrix(mat)
         self.invrot = np.linalg.inv(self.rot)
 
@@ -50,15 +48,13 @@ class Plane:
         newtrackpoint = np.asarray(self.invrot.dot(trackpoint))[0]
         newtrackMomentum = np.asarray(self.invrot.dot(trackMomentum))[0]
 
-        print(self.rot)
-
+        
         newp = np.asarray((self.invrot.dot(self.p)))[0]
         ztouch = newp[2]
-
-        t = (track.gamma*track.m)/(30.0*newtrackMomentum[2])*(ztouch-trackpoint[2])
+        t = (track.gamma*track.m)/(29.98*newtrackMomentum[2])*(ztouch-newtrackpoint[2])
         x,y,z = track.eval(t)
+        point = np.asarray([x,y,z])
 
-        return np.asarray([x,y,z])
-        
+        return point
 
     

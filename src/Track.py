@@ -67,7 +67,8 @@ class Track:
         self.m = 0.140
         b = 3.8
         self.gamma = np.sqrt(self.pt**2 + self.pz**2 + self.m**2)/self.m
-        self.w = self.q * 2.7143 / self.gamma
+        #self.w = self.q * 0.0898802.7143 / self.gamma
+        self.w = self.q * 0.089880 * b / (self.gamma * self.m)
 
         #POCA points
         self.x_cp = dxy * np.cos(phi + np.pi/2.0)
@@ -86,7 +87,9 @@ class Track:
         
         x = self.rt * np.sin(self.w * t - self.phi) + self.x_c       
         y = self.rt * np.cos(self.w * t - self.phi) + self.y_c
-        z = 30.0 * self.pz / (self.gamma*self.m) * t + self.dz        
+        z = 29.98 * self.pz / (self.gamma*self.m) * t + self.dz        
+        #z = self.pz / (self.gamma*self.m) * t + self.dz        
+
         return x, y, z
 
     def plot_track(self, ax1, ax2, ax3, fmt = 'g'):
