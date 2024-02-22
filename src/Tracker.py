@@ -174,8 +174,8 @@ class Tracker:
                 t.append(tj)
 
         x, y, z = track.eval(np.array(t))    
-        track.lastT = t[-1]
-        return x, y, z
+        #track.lastT = t[-1]
+        return x, y, z, t
     
     
     def plot_intersection(self, track, ax1, ax2, ax3, fmt = 'r*'):
@@ -195,7 +195,12 @@ class Tracker:
 
         '''
         # for track in tracks:
-        x, y, z = self.intersection(track)
+        x, y, z, t = self.intersection(track)
+        track.xi = np.concatenate((track.xi, x), axis=0)
+        track.yi = np.concatenate((track.yi, y), axis=0)
+        track.zi = np.concatenate((track.zi, z), axis=0)
+        track.ti = np.concatenate((track.ti, t), axis=0)
+       
         self.plot_points(x, y, z, ax1, ax2, ax3, fmt)
         return x, y, z    
 
