@@ -21,6 +21,7 @@ class ETL:
                 if np.sqrt(xb**2+yb**2) > innerR and np.sqrt(xbm**2+yb**2) < outterR:
                     m = Module(x, y, z, 0.0, 0.0, 1.0, Lx, Ly)
                     self.modules.append(m)
+                    print(x,y,z)
                 if np.sqrt(xbleft**2+yb**2) > innerR and np.sqrt(xbmleft**2+yb**2) < outterR:
                     m = Module(xleft, y, z, 0.0, 0.0, 1.0, Lx, Ly)
                     self.modules.append(m)
