@@ -29,6 +29,7 @@ if __name__ == "__main__":
     tracker = Tracker(layers, layersz, sigma_phi, sigma_z, 220.0, [0,0,0])
     tracker.plot_tracker(ax1, ax2, ax3)
 
+
     #An example track
     
     track = Track(0, 0, np.pi/2.0, 1.7, 10, 1.0)

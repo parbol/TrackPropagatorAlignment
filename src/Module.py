@@ -1,26 +1,83 @@
 from src.Plane import Plane
 import numpy as np
+import sys
 
 class Module:
 
-    def __init__(self, x0, y0, z0, nx, ny, nz, Lx, Ly, ):
+    def __init__(self, xnom, anglenom, x, angle, Lx, Ly):
 
-        self.plane = Plane(x0, y0, z0, nx, ny, nz) 
+        #In local coordinates the module Z is always parallel to global Z
+        #RotX
+        self.xnom = xnom
+        matxnom_ = [[1.0, 0, 0],
+                [0.0, np.cos(anglenom[0]), -np.sin(anglenom[0])],
+                [0.0, np.sin(anglenom[0]), np.cos(anglenom[0])]]
+        matxnom = np.asmatrix(matxnom_)
+        #RotY
+        matynom_ = [[np.cos(anglenom[1]), 0.0, -np.sin(anglenom[1])],
+                [0.0, 1.0, 0.0],
+                [np.sin(anglenom[1]), 0.0, np.cos(anglenom[1])]]
+        matynom = np.asmatrix(matynom_)
+        #RotZ
+        matznom_ = [[np.cos(anglenom[2]), -np.sin(anglenom[2]), 0.0],
+                [np.sin(anglenom[2]), np.cos(anglenom[2]), 0.0],
+                [0.0, 0.0, 1.0]]
+        matznom = np.asmatrix(matznom_)
+
+        self.rotnom = matxnom.dot(matynom.dot(matznom))
+        self.invrotnom = np.linalg.inv(self.rotnom)
+        
+        znom = np.asarray([0.0, 0.0, 1.0])
+        nnom = np.asarray(self.rot.dot(znom))[0]   
+
+        #In local coordinates the module Z is always parallel to global Z
+        #RotX
+        self.x = x
+        matx_ = [[1.0, 0, 0],
+                [0.0, np.cos(angle[0]), -np.sin(angle[0])],
+                [0.0, np.sin(angle[0]), np.cos(angle[0])]]
+        matx = np.asmatrix(matx_)
+        #RotY
+        maty_ = [[np.cos(angle[1]), 0.0, -np.sin(angle[1])],
+                [0.0, 1.0, 0.0],
+                [np.sin(angle[1]), 0.0, np.cos(angle[1])]]
+        maty = np.asmatrix(maty_)
+        #RotZ
+        matz_ = [[np.cos(angle[2]), -np.sin(angle[2]), 0.0],
+                [np.sin(angle[2]), np.cos(angle[2]), 0.0],
+                [0.0, 0.0, 1.0]]
+        matz = np.asmatrix(matz_)
+
+        self.rot = matx.dot(maty.dot(matz))
+        self.invrot = np.linalg.inv(self.rot)
+
+        z = np.asarray([0.0, 0.0, 1.0])
+        n = np.asarray(self.rot.dot(z))[0]  
+
         self.pLLlocal = np.asarray([-Lx/2.0, -Ly/2.0, 0.0]) 
         self.pLRlocal = np.asarray([Lx/2.0, -Ly/2.0, 0.0]) 
         self.pULlocal = np.asarray([-Lx/2.0, Ly/2.0, 0.0]) 
         self.pURlocal = np.asarray([Lx/2.0, Ly/2.0, 0.0])
         
-        self.pLLnominal = self.plane.p + np.asarray(self.plane.rot.dot(self.pLLlocal))[0]
-        self.pLRnominal = self.plane.p + np.asarray(self.plane.rot.dot(self.pLRlocal))[0]
-        self.pULnominal = self.plane.p + np.asarray(self.plane.rot.dot(self.pULlocal))[0]
-        self.pURnominal = self.plane.p + np.asarray(self.plane.rot.dot(self.pURlocal))[0]
-   
-        self.pLL = self.pLLnominal
-        self.pLR = self.pLRnominal
-        self.pUL = self.pULnominal
-        self.pUR = self.pURnominal
+        self.planeNom = Plane(xnom[0], xnom[1], xnom[2], anglenom[0], anglenom[1], anglenom[2]) 
+        self.pLLnominal = self.toGlobalNom(self.pLLlocal)
+        self.pLRnominal = self.toGlobalNom(self.pLRlocal)
+        self.pULnominal = self.toGlobalNom(self.pULlocal)
+        self.pURnominal = self.toGlobalNom(self.pURlocal)
+
+        self.plane = Plane(x[0], x[1], x[2], angle[0], angle[1], angle[2]) 
+        self.pLL = self.toGlobal(self.pLLlocal)
+        self.pLR = self.toGlobal(self.pLRlocal)
+        self.pUL = self.toGlobal(self.pULlocal)
+        self.pUR = self.toGlobal(self.pURlocal)
  
+    def toGlobal(self, v):
+
+        return self.x + np.asarray(self.rot.dot(v))[0]
+    
+    def toGlobalNom(self, v):
+
+        return self.xnom + np.asarray(self.rotnom.dot(v))[0]
 
     def drawModule(self, ax1, ax2, ax3, t):
 
