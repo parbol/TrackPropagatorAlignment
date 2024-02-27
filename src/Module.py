@@ -28,7 +28,7 @@ class Module:
         self.invrotnom = np.linalg.inv(self.rotnom)
         
         znom = np.asarray([0.0, 0.0, 1.0])
-        nnom = np.asarray(self.rot.dot(znom))[0]   
+        nnom = np.asarray(self.rotnom.dot(znom))[0]   
 
         #In local coordinates the module Z is always parallel to global Z
         #RotX
@@ -59,13 +59,13 @@ class Module:
         self.pULlocal = np.asarray([-Lx/2.0, Ly/2.0, 0.0]) 
         self.pURlocal = np.asarray([Lx/2.0, Ly/2.0, 0.0])
         
-        self.planeNom = Plane(xnom[0], xnom[1], xnom[2], anglenom[0], anglenom[1], anglenom[2]) 
+        self.planeNom = Plane(xnom[0], xnom[1], xnom[2], nnom[0], nnom[1], nnom[2]) 
         self.pLLnominal = self.toGlobalNom(self.pLLlocal)
         self.pLRnominal = self.toGlobalNom(self.pLRlocal)
         self.pULnominal = self.toGlobalNom(self.pULlocal)
         self.pURnominal = self.toGlobalNom(self.pURlocal)
 
-        self.plane = Plane(x[0], x[1], x[2], angle[0], angle[1], angle[2]) 
+        self.plane = Plane(x[0], x[1], x[2], n[0], n[1], n[2]) 
         self.pLL = self.toGlobal(self.pLLlocal)
         self.pLR = self.toGlobal(self.pLRlocal)
         self.pUL = self.toGlobal(self.pULlocal)
@@ -78,7 +78,15 @@ class Module:
     def toGlobalNom(self, v):
 
         return self.xnom + np.asarray(self.rotnom.dot(v))[0]
+    
+    def toLocal(self, v):
 
+        return np.asarray(self.rotinv.dot(v - self.x))[0]
+    
+    def toLocalNom(self, v):
+
+        return np.asarray(self.rotinvnom.dot(v - self.xnom))[0]
+    
     def drawModule(self, ax1, ax2, ax3, t):
 
         x_start = [self.pLL[0], self.pLR[0], self.pUR[0], self.pUL[0], self.pLL[0]]

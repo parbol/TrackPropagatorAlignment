@@ -32,16 +32,16 @@ if __name__ == "__main__":
 
     #An example track
     
-    track = Track(0, 0, np.pi/2.0, 1.7, 10, 1.0)
-    p = Plane(0.0, 0.0, 400.0, 0.0, 0.0, 1.0)
+    #track = Track(0, 0, np.pi/2.0, 1.7, 10, 1.0)
+    #p = Plane(0.0, 0.0, 400.0, 0.0, 0.0, 1.0)
     
     m = ETL(350.0, 4.0, 4.0, 30, 50, 1.0, 1.0, 4.0, 4.0, 30.0, 127.0)
     m.draw(ax1, ax2, ax3, 'g')
 
-    x, y, z = tracker.plot_intersection(track, ax1, ax2, ax3, 'g*')
-    x, y, z = p.intersection(track)
+    #x, y, z = tracker.plot_intersection(track, ax1, ax2, ax3, 'g*')
+    #x, y, z = p.intersection(track)
 
-    track.plot_track(ax1, ax2, ax3, 'black')
+    #track.plot_track(ax1, ax2, ax3, 'black')
     #track2 = Track(0, 0, np.pi/2.0, 0.5, 3.0, 1.0)
     #x, y, z = tracker.plot_intersection(track2, ax1, ax2, ax3, 'g*')
     #track2.plot_track(ax1, ax2, ax3)
