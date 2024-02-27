@@ -24,24 +24,20 @@ if __name__ == "__main__":
     #configuring the tracker
     layers = np.linspace(1, 100, 20)
     layersz = np.linspace(130, 270, 5)
-    sigma_phi = 2 / layers
-    sigma_z = 4 + np.zeros(len(layers))
-    tracker = Tracker(layers, layersz, sigma_phi, sigma_z, 220.0, [0,0,0])
+    sigma_rphi = 0.01
+    sigma_z = 0.01
+    tracker = Tracker(layers, layersz, sigma_rphi, sigma_z, 220.0, [0,0,0])
     tracker.plot_tracker(ax1, ax2, ax3)
 
     #An example track
     
     track = Track(0, 0, np.pi/2.0, 1.7, 10, 1.0)
-    p = Plane(0.0, 0.0, 400.0, 0.0, 0.0, 1.0)
-    print(p.intersection(track))
-    
-    m = ETL(350.0, 4.0, 4.0, 30, 50, 1.0, 1.0, 4.0, 4.0, 30.0, 127.0)
-    m.draw(ax1, ax2, ax3, 'g')
-
-    x, y, z = tracker.plot_intersection(track, ax1, ax2, ax3, 'g*')
-    x, y, z = p.intersection(track)
-
+    tracker.fullMeasurement(track)
     track.plot_track(ax1, ax2, ax3, 'black')
+    track.plot_intersections(ax1, ax2, ax3, 'g*')
+
+    #m = ETL(350.0, 4.0, 4.0, 30, 50, 1.0, 1.0, 4.0, 4.0, 30.0, 127.0)
+    #m.draw(ax1, ax2, ax3, 'g')  
     #track2 = Track(0, 0, np.pi/2.0, 0.5, 3.0, 1.0)
     #x, y, z = tracker.plot_intersection(track2, ax1, ax2, ax3, 'g*')
     #track2.plot_track(ax1, ax2, ax3)

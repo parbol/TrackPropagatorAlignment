@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 class Track:
     
     def __init__(self, dxy, dz, phi, eta, pt, q):
@@ -67,7 +68,6 @@ class Track:
         self.m = 0.140
         b = 3.8
         self.gamma = np.sqrt(self.pt**2 + self.pz**2 + self.m**2)/self.m
-        #self.w = self.q * 0.0898802.7143 / self.gamma
         self.w = self.q * 0.089880 * b / (self.gamma * self.m)
 
         #POCA points
@@ -80,27 +80,50 @@ class Track:
         self.x_c = self.rt * np.sin(phi) + self.x_cp
         self.y_c = -self.rt * np.cos(phi) + self.y_cp
         
-        #Last t of the track in the tracker
+        #List of intersections and measurements
+        self.det = []
         self.xi = np.asarray([])
         self.yi = np.asarray([])
         self.zi = np.asarray([])
         self.ti = np.asarray([])
-
+        self.xm = np.asarray([])
+        self.ym = np.asarray([])
+        self.zm = np.asarray([])
+        self.tm = np.asarray([])
+        
         self.lastT = 0
 
+    
     def eval(self, t):
         
+        # Returns the position of a track at time t    
         x = self.rt * np.sin(self.w * t - self.phi) + self.x_c       
         y = self.rt * np.cos(self.w * t - self.phi) + self.y_c
         z = 29.98 * self.pz / (self.gamma*self.m) * t + self.dz        
-        #z = self.pz / (self.gamma*self.m) * t + self.dz        
 
         return x, y, z
+
+
+    def plot_points(self, x, y, z, ax1, ax2, ax3, fmt):
+
+        ax2.plot(x, y, fmt)
+        ax1.plot3D(x, z, y, fmt)
+        ax3.plot(z, y, fmt)
+
+
+    def plot_intersections(self, ax1, ax2, ax3, fmt):
+
+        self.plot_points(self.xi, self.yi, self.zi, ax1, ax2, ax3, fmt)
+
+
+    def plot_measurements(self, axi1, ax2, ax3, fmt):
+
+        self.plot_points(self.xm, self.ym, self.zm, ax1, ax2, ax3, fmt)
+
 
     def plot_track(self, ax1, ax2, ax3, fmt = 'g'):
               
         #We have all the ingredients, we just need to propagate the track for a given time
-        print(self.ti)
         t = np.linspace(0, self.ti[-1], 200)
         x, y, z = self.eval(t)
         ax1.plot3D(x, z, y, fmt)

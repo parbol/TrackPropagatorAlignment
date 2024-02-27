@@ -5,18 +5,28 @@ from random import Random
 import sys
 
 class Tracker:
-       
+      
     def __init__(self, ri, rz, phi_error, z_error, zsize, centre = [0, 0, 0]):
-       
+        ###################################################################################
+        #                            A simple tracker model                               #
+        # This is a very simplified model of the tracker with the following paramenters:  #
+        # ri: a list with the radius of the various layers of the tracker barrel          #
+        # rz: a list with the z position of the various layers of the tracker endcap      #
+        # rphi_error: resolution uncertainty in the rphi variable                         #
+        # z_error: resolution uncertainty in the z variable                               #
+        # z_size: determines the end of the barrel in z coordinates                       #
+        # centre: centre of the tracker (0,0,0) by default                                #
+        ###################################################################################
         self.centre = centre
         self.ri = ri
         self.zp = rz
         self.zm = -1.0 * rz
         self.z = np.concatenate((self.zm, self.zp), axis=0)
-        self.phi_error = phi_error
+        self.rphi_error = phi_error
         self.z_error = z_error
         self.zsize = zsize      
   
+
     def plot_tracker(self, ax1, ax2, ax3, fmtb = 'b--', fmte = 'r--'):
         
         theta = np.linspace(0, 2 * np.pi, 20)
@@ -72,6 +82,7 @@ class Tracker:
                 yt2.append(-i)
                 ax3.plot(x, yt, fmte, x, yt2, fmte)   
 
+  
     def convertAngle(self, theta):
         if theta > np.pi:
             return theta - np.pi * 2.0
@@ -79,6 +90,7 @@ class Tracker:
             return theta + np.pi * 2.0
         return theta 
  
+  
     def intersection(self, track):
                   
         ri2 = self.ri**2
@@ -162,103 +174,67 @@ class Tracker:
             tendcap = tendcapm
 
         t = []
+        det = []
         for tj in tbarrel:
             if tj > tendcap[0]:
                 break
             x, y, z = track.eval(tj)
             if z < self.centre[2] + self.zsize/2.0 and z > self.centre[2] - self.zsize/2.0:
                 t.append(tj)
+                det.append(0)
         for tj in tendcap:
             x, y, z = track.eval(tj)
             if np.sqrt(x**2+y**2) < self.ri[-1]:
                 t.append(tj)
+                det.append(1)
 
         x, y, z = track.eval(np.array(t))    
         #track.lastT = t[-1]
-        return x, y, z, t
+        return x, y, z, t, det
     
     
-    def plot_intersection(self, track, ax1, ax2, ax3, fmt = 'r*'):
-        '''
-        Plots the intersection of the tracker and the given track
-
-        Parameters
-        ----------
-        tracks : list
-            list of Track.
-
-        Returns
-        -------
-        x : list
-            3D list with the three cartesian coordinates of the interesection 
-            point.
-
-        '''
+    def makeIntersection(self, track):
+       
         # for track in tracks:
-        x, y, z, t = self.intersection(track)
+        x, y, z, t, det = self.intersection(track)
         track.xi = np.concatenate((track.xi, x), axis=0)
         track.yi = np.concatenate((track.yi, y), axis=0)
         track.zi = np.concatenate((track.zi, z), axis=0)
         track.ti = np.concatenate((track.ti, t), axis=0)
-       
-        self.plot_points(x, y, z, ax1, ax2, ax3, fmt)
-        return x, y, z    
+        track.det = det
+
 
     def measure(self, track):
-        '''
-        Simulates the measurement of the intersection point
+        
+        phi = np.arctan2(track.yi, track.xi)
+        r = np.sqrt(track.yi**2 + track.xi**2)
+        sigma_rphi = self.rphi_error / r
+        sigma_z = np.zeros(track.xi.shape) + self.z_error
+        phi = phi + np.random.normal(0, sigma_rphi)
+        z = track.zi + np.random.normal(0, sigma_z)
+        x_meas = r * np.cos(phi)
+        y_meas = r * np.sin(phi)
+        z_meas = z 
 
-        Parameters
-        ----------
-        tracks : list
-            list of Track.
-        sigma_h: float, optional
-            error used for the gaussian. Default value is 0.05
-
-        Returns
-        -------
-        meast_points_c : list
-            3D list with the three cartesian coordinates of the measured 
-            interesection point.
-        meast_points : float
-            theta value for the intersection point, obtained through a gaussian.
-
-        '''
-        # for track in tracks:
-        x, y, z = self.intersection(track)
-        phi = np.arctan2(y, x) + np.random.normal(0, self.phi_error)
-        x_meas = self.ri * np.cos(phi)
-        y_meas = self.ri * np.sin(phi)
-        z_meas = z + np.random.normal(0, self.z_error)
- 
-        return x_meas, y_meas, z_meas
-
-    def plot_points(self, x, y, z, ax1, ax2, ax3, fmt):
-
-        ax2.plot(x, y, fmt)
-        ax1.plot3D(x, z, y, fmt)
-        ax3.plot(z, y, fmt)
+        return x_meas, y_meas, z_meas    
     
-    def plot_meast_points(self, track, ax1, ax2, ax3, fmt = 'bx'):
-        '''
-        Plots the measured intersection points
-
-        Parameters
-        ----------
-        tracks : list
-            list of Track.
-
-        Returns
-        -------
-        x : list
-            3D list with the three cartesian coordinates of the measured 
-            interesection point.
-        meast_points : float
-            theta value for the intersection point, obtained through a gaussian.
-
-        '''
+    
+    def makeMeasurement(self, track):
+       
         # for track in tracks:
         x, y, z = self.measure(track)
-        self.plot_points(x, y, z, ax1, ax2, ax3, fmt)
-        return x, y, z    
+        track.xm = np.concatenate((track.xm, x), axis=0)
+        track.ym = np.concatenate((track.ym, y), axis=0)
+        track.zm = np.concatenate((track.zm, z), axis=0)
+        track.tm = np.concatenate((track.tm, track.ti), axis=0)
+       
 
+    def fullMeasurement(self, track):
+
+        self.makeIntersection(track)
+        self.makeMeasurement(track)
+
+
+
+        
+  
