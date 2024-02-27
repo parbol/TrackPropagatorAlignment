@@ -53,16 +53,15 @@ class Plane:
         ztouch = newp[2]
         t = (track.gamma*track.m)/(29.98*newtrackMomentum[2])*(ztouch-newtrackpoint[2])
         x,y,z = track.eval(t)
-        point = np.asarray([x,y,z])
         #np.concatenate((track.xi, np.asarray(x)), axis=0)
         #np.concatenate((track.yi, np.asarray(y)), axis=0)
         #np.concatenate((track.zi, np.asarray(z)), axis=0)
         #np.concatenate((track.ti, np.asarray(t)), axis=0)
-        track.xi = np.append(track.xi, [x])
-        track.yi = np.append(track.yi, [y])        
-        track.zi = np.append(track.zi, [z])        
-        track.ti = np.append(track.ti, [t])        
+        #track.xi = np.append(track.xi, [x])
+        #track.yi = np.append(track.yi, [y])        
+        #track.zi = np.append(track.zi, [z])        
+        #track.ti = np.append(track.ti, [t])        
         
-        return point
+        return x, y, z, t
 
     

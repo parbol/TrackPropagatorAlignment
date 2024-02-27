@@ -28,17 +28,21 @@ if __name__ == "__main__":
     sigma_z = 0.01
     tracker = Tracker(layers, layersz, sigma_rphi, sigma_z, 220.0, [0,0,0])
     tracker.plot_tracker(ax1, ax2, ax3)
-
-
-    #An example track
     
+    #Configuring the ETL 
+    etl = ETL(350.0, 4.0, 4.0, 30, 50, 4.0, 1.0, 4.0, 4.0, 30.0, 127.0, 0.1, 0.001, 0.3)
+    etl.draw(ax1, ax2, ax3, 'g')
+    
+    
+    #An example track 
     track = Track(0, 0, np.pi/2.0, 1.7, 10, 1.0)
     tracker.fullMeasurement(track)
+    etl.fullMeasurement(track)
     track.plot_track(ax1, ax2, ax3, 'black')
     track.plot_intersections(ax1, ax2, ax3, 'g*')
 
-    #m = ETL(350.0, 4.0, 4.0, 30, 50, 1.0, 1.0, 4.0, 4.0, 30.0, 127.0)
-    #m.draw(ax1, ax2, ax3, 'g')  
+   
+
     #track2 = Track(0, 0, np.pi/2.0, 0.5, 3.0, 1.0)
     #x, y, z = tracker.plot_intersection(track2, ax1, ax2, ax3, 'g*')
     #track2.plot_track(ax1, ax2, ax3)

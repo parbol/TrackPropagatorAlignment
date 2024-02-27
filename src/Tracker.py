@@ -197,10 +197,18 @@ class Tracker:
        
         # for track in tracks:
         x, y, z, t, det = self.intersection(track)
+        copyxi = np.copy(track.xi)
+        copyyi = np.copy(track.yi)
+        copyzi = np.copy(track.zi)
+        copyti = np.copy(track.ti)
         track.xi = np.concatenate((track.xi, x), axis=0)
         track.yi = np.concatenate((track.yi, y), axis=0)
         track.zi = np.concatenate((track.zi, z), axis=0)
         track.ti = np.concatenate((track.ti, t), axis=0)
+        track.xin = np.concatenate((copyxi, x), axis=0)
+        track.yin = np.concatenate((copyyi, y), axis=0)
+        track.zin = np.concatenate((copyzi, z), axis=0)
+        track.tin = np.concatenate((copyti, t), axis=0)
         track.det = det
 
 
@@ -223,11 +231,19 @@ class Tracker:
        
         # for track in tracks:
         x, y, z = self.measure(track)
+        copyxm = np.copy(track.xm)
+        copyym = np.copy(track.ym)
+        copyzm = np.copy(track.zm)
+        copytm = np.copy(track.tm)
+
         track.xm = np.concatenate((track.xm, x), axis=0)
         track.ym = np.concatenate((track.ym, y), axis=0)
         track.zm = np.concatenate((track.zm, z), axis=0)
         track.tm = np.concatenate((track.tm, track.ti), axis=0)
-       
+        track.xmn = np.concatenate((copyxm, x), axis=0)
+        track.ymn = np.concatenate((copyym, y), axis=0)
+        track.zmn = np.concatenate((copyzm, z), axis=0)
+        track.tmn = np.concatenate((copytm, track.ti), axis=0)
 
     def fullMeasurement(self, track):
 

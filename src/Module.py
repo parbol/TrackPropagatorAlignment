@@ -8,6 +8,9 @@ class Module:
 
         #In local coordinates the module Z is always parallel to global Z
         #RotX
+        self.Lx = Lx
+        self.Ly = Ly
+
         self.xnom = xnom
         matxnom_ = [[1.0, 0, 0],
                 [0.0, np.cos(anglenom[0]), -np.sin(anglenom[0])],
@@ -81,12 +84,39 @@ class Module:
     
     def toLocal(self, v):
 
-        return np.asarray(self.rotinv.dot(v - self.x))[0]
+        return np.asarray(self.invrot.dot(v - self.x))[0]
     
     def toLocalNom(self, v):
 
-        return np.asarray(self.rotinvnom.dot(v - self.xnom))[0]
+        return np.asarray(self.invrotnom.dot(v - self.xnom))[0]
     
+    def isInside(self, p):
+
+        if p[0] < -self.Lx/2.0 or p[0] > self.Lx/2.0:
+            return False
+        if p[1] < -self.Ly/2.0 or p[1] > self.Ly/2.0:
+            return False
+        return True
+    
+
+    def intersection(self, track):
+        
+        x, y, z, t = self.plane.intersection(track)
+        p = np.asarray([x, y, z])
+        plocal = self.toLocal(p)
+        if self.isInside(plocal):
+            return True, x, y, z, t
+        return False, x, y, z, t
+    
+    def intersectionNom(self, track):
+        
+        x, y, z, t = self.planeNom.intersection(track)
+        p = np.asarray([x, y, z])
+        plocal = self.toLocal(p)
+        if self.isInside(plocal):
+            return True, x, y, z, t
+        return False, x, y, z, t
+
     def drawModule(self, ax1, ax2, ax3, t):
 
         x_start = [self.pLL[0], self.pLR[0], self.pUR[0], self.pUL[0], self.pLL[0]]
