@@ -102,8 +102,11 @@ class Module:
     def intersection(self, track):
         
         x, y, z, t = self.plane.intersection(track)
+        print('Real')
+        print(x, y, z, t)
         p = np.asarray([x, y, z])
         plocal = self.toLocal(p)
+        print(plocal)
         if self.isInside(plocal):
             return True, x, y, z, t
         return False, x, y, z, t
@@ -111,8 +114,11 @@ class Module:
     def intersectionNom(self, track):
         
         x, y, z, t = self.planeNom.intersection(track)
+        print('Nom')
+        print(x, y, z, t)
         p = np.asarray([x, y, z])
-        plocal = self.toLocal(p)
+        plocal = self.toLocalNom(p)
+        print(plocal)
         if self.isInside(plocal):
             return True, x, y, z, t
         return False, x, y, z, t

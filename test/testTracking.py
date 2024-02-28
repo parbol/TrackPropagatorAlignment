@@ -30,12 +30,13 @@ if __name__ == "__main__":
     tracker.plot_tracker(ax1, ax2, ax3)
     
     #Configuring the ETL 
-    etl = ETL(350.0, 4.0, 4.0, 30, 50, 4.0, 1.0, 4.0, 4.0, 30.0, 127.0, 0.1, 0.001, 0.3)
+    etl = ETL(350.0, 4.0, 4.0, 30, 50, 4.0, 1.0, 2.0, 2.0, 30.0, 127.0, 0.1, 0.001, 0.3)
     etl.draw(ax1, ax2, ax3, 'g')
     
     
     #An example track 
-    track = Track(0, 0, np.pi/2.0, 1.7, 10, 1.0)
+    #track = Track(0, 0, np.pi/2.0, 2.1, 10, 1.0)
+    track = Track(0, 0, np.pi/2.0, 2.15, 10, 1.0)
     tracker.fullMeasurement(track)
     etl.fullMeasurement(track)
     track.plot_track(ax1, ax2, ax3, 'black')

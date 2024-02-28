@@ -20,6 +20,9 @@ class ETL:
         # z_error: undertainty in z
         # t_error: time uncertainty
         self.z = z
+        self.rphi_error = rphi_error
+        self.z_error = z_error
+        self.t_error = t_error
         self.plane = Plane(0, 0, z, 0.0, 0.0, 1.0)
         self.firstcenterRightX = -shiftx
         self.firstcenterRightY = outterR - shifty
@@ -40,7 +43,7 @@ class ETL:
                     zt = z + (r-30.0) / np.tan(np.pi/6.0)
                     vnom = [x, y, z]
                     anglenom = [0.0, 0.0, 0.0]
-                    v = [x, y, z]
+                    v = [x, y, zt]
                     angle = [0.0, 0.0, 0.0]
                     m = Module(vnom, anglenom, v, angle, Lx, Ly)
                     self.modules.append(m)
@@ -49,7 +52,7 @@ class ETL:
                     zt = z + (r-30.0) / np.tan(np.pi/6.0)
                     vnom = [xleft, y, z]
                     anglenom = [0.0, 0.0, 0.0]
-                    v = [xleft, y, z]
+                    v = [xleft, y, zt]
                     angle = [0.0, 0.0, 0.0]
                     m = Module(vnom, anglenom, v, angle, Lx, Ly)
                     self.modules.append(m)
