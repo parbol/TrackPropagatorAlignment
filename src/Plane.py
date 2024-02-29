@@ -64,4 +64,30 @@ class Plane:
         
         return x, y, z, t
 
-    
+
+    def intersection2(self, track):
+
+        Delta = self.n[0] * track.x_c + self.n[1] * track.y_c + self.n[2] * track.dz
+        alpha = track.rt**2*(self.n[0]**2+self.n[1]**2)
+        beta = 2.0 * Delta * track.rt  * self.n[1]
+        gamma = Delta**2 - track.rt**2 * self.n[0]**2
+        sp = (-beta + np.sqrt(beta**2-4.0*alpha*gamma))/(2.0*alpha)
+        sm = (-beta - np.sqrt(beta**2-4.0*alpha*gamma))/(2.0*alpha)
+        tp = 1.0/track.w * (np.arcsin(sp) + track.phi)
+        tm = 1.0/track.w * (np.arcsin(sm) + track.phi)
+        t = 0
+        if tm < 0 and tp >= 0:
+            t = tp
+        if tm >= 0 and tp < 0:
+            t = tm
+        if tm < 0 and tp < 0:
+            print('ERror')
+            sys.exit()
+        if tm >= 0 and tp >= 0:
+            if tm > tp:
+                t = tp
+            else:
+                t = tm
+                    
+        x,y,z = track.eval(t)
+        return x, y, z, t   

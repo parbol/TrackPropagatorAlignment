@@ -27,7 +27,8 @@ class ETL:
         self.firstcenterRightX = -shiftx
         self.firstcenterRightY = outterR - shifty
         self.firstcenterLeftX = +shiftx
-        self.modules = []        
+        self.modules = []
+        tanphi = np.tan(np.pi/6.0)        
         for i in range(ncolumns):
             for j in range(nrows):
                 x = self.firstcenterRightX - i * (gapx + Lx)
@@ -40,20 +41,22 @@ class ETL:
                 xbmleft = xleft + Lx/2.0
                 if np.sqrt(xb**2+yb**2) > innerR and np.sqrt(xbm**2+yb**2) < outterR:
                     r = np.sqrt(y**2+x**2)
-                    zt = z + (r-30.0) / np.tan(np.pi/6.0)
+                    zt = z + (r-30.0) / tanphi
                     vnom = [x, y, z]
                     anglenom = [0.0, 0.0, 0.0]
                     v = [x, y, zt]
-                    angle = [0.0, 0.0, 0.0]
+                    n = np.asarray([-x/r, -y/r, tanphi])/np.sqrt(1+tanphi**2)
+                    angle = self.XYfromNormalVector(n)
                     m = Module(vnom, anglenom, v, angle, Lx, Ly)
                     self.modules.append(m)
                 if np.sqrt(xbleft**2+yb**2) > innerR and np.sqrt(xbmleft**2+yb**2) < outterR:
                     r = np.sqrt(y**2+xleft**2)
-                    zt = z + (r-30.0) / np.tan(np.pi/6.0)
+                    zt = z + (r-30.0) / tanphi
                     vnom = [xleft, y, z]
                     anglenom = [0.0, 0.0, 0.0]
                     v = [xleft, y, zt]
-                    angle = [0.0, 0.0, 0.0]
+                    n = np.asarray([-xleft/r, -y/r, tanphi])/np.sqrt(1+tanphi**2)
+                    angle = self.XYfromNormalVector(n)
                     m = Module(vnom, anglenom, v, angle, Lx, Ly)
                     self.modules.append(m)
 
@@ -141,56 +144,98 @@ class ETL:
 
 
     def XYfromNormalVector(self, n):
-
-        siny = -n[0]
-        cosyp = np.sqrt(1.0 - siny*siny)
-        cosym = -cosyp
-        if np.abs(cosym) < 1e-7:
-            
-
-        cosxp = n[0]/cosyp
-        cosxm = n[0]/cosym
-        sinxp = np.sqrt/(1.0 - cosxp*cosxp)
-        sinxm = -sinxp
-        x = np.arccos(cosxp)
-        y = np.arccos(cosyp)
-              
-        if self.normalVectorMatches(n, sinxp, siny, cosxp, cosyp):
-            x = -x
-        elif self.normalVectorMatches(n, sinxp, siny, cosxp, cosym):
-            y = np.pi-y
-        elif self.normalVectorMatches(n, sinxp, siny, cosxm, cosyp):
-            x = np.pi-x
-        elif self.normalVectorMatches(n, sinxp, siny, cosxm, cosym):
-            x = np.pi-x
-            y = np.pi-y
-        elif self.normalVectorMatches(n, sinxm, siny, cosxp, cosyp):
-            x = -x
-        elif self.normalVectorMatches(n, sinxm, siny, cosxp, cosym):
-            x = -x
-            y = np.pi-y
-        elif self.normalVectorMatches(n, sinxm, siny, cosxm, cosyp):
-            x = np.pi + x
-        else:
-            x = np.pi + x
-            y = np.pi-y
-        return np.asarray([x,y,0.0])
     
+        siny = -n[0]    
+        #Pathological case
+        if siny*siny > 1.0:
+            if siny > 0.0:
+                return np.asarray([0.0, np.pi/2.0, 0.0])
+            else:
+                return np.asarray([0.0, -np.pi/2.0, 0.0])
+        cosy = np.sqrt(1.0 - siny*siny)    
+        cosx = n[2]/cosy
+        #We set the range of cosx
+        if np.abs(cosx) > 1.0:
+            cosx = 1.0
+
+        y = np.arccos(cosy)  
+        x = np.arccos(cosx)
+    
+        y = np.arcsin(np.sin(y))
+        x = np.arcsin(np.sin(x))
+
+
+        sinxp = np.abs(np.sin(x))
+        sinxm = -sinxp
+        cosxp = np.abs(np.cos(x))
+        cosxm = -cosxp
+        cosyp = np.abs(np.cos(y))
+        cosym = -cosyp
+    
+        if siny >= 0:          
+            if self.normalVectorMatches(n, sinxp, siny, cosxp, cosyp):
+                x = x
+            elif self.normalVectorMatches(n, sinxp, siny, cosxp, cosym):
+                y = np.pi-y
+            elif self.normalVectorMatches(n, sinxp, siny, cosxm, cosyp):
+                x = np.pi-x
+            elif self.normalVectorMatches(n, sinxp, siny, cosxm, cosym):
+                x = np.pi-x
+                y = np.pi-y
+            elif self.normalVectorMatches(n, sinxm, siny, cosxp, cosyp):
+                x = -x
+            elif self.normalVectorMatches(n, sinxm, siny, cosxp, cosym):
+                x = -x
+                y = np.pi-y
+            elif self.normalVectorMatches(n, sinxm, siny, cosxm, cosyp):
+                x = np.pi + x
+            else:
+                x = np.pi + x
+                y = np.pi-y
+        else:
+            if self.normalVectorMatches(n, sinxp, siny, cosxp, cosyp):
+                y = -y
+            elif self.normalVectorMatches(n, sinxp, siny, cosxp, cosym):
+                y = np.pi+y
+            elif self.normalVectorMatches(n, sinxp, siny, cosxm, cosyp):
+                x = np.pi-x
+                y = -y
+            elif self.normalVectorMatches(n, sinxp, siny, cosxm, cosym):
+                x = np.pi-x
+                y = np.pi+y
+            elif self.normalVectorMatches(n, sinxm, siny, cosxp, cosyp):
+                x = -x
+                y = -y
+            elif self.normalVectorMatches(n, sinxm, siny, cosxp, cosym):
+                x = -x
+                y = np.pi+y
+            elif self.normalVectorMatches(n, sinxm, siny, cosxm, cosyp):
+                x = np.pi + x
+                y = -y
+            else:
+                x = np.pi + x
+                y = np.pi+y
+        return np.asarray([x,y,0.0])
+
+
     def normalVectorMatches(self, n, sinxm, siny, cosxp, cosyp):
         
         tol = 0.001
-        A = self.makeXYspecialMatrix(self, sinxm, siny, cosxp, cosyp)
+        A = self.makeXYspecialMatrix(sinxm, siny, cosxp, cosyp)
+        z = np.asarray([0.0, 0.0, 1.0])
         vz = np.asarray(A.dot(z))[0]
         if np.abs(vz[0]-n[0]) < tol and np.abs(vz[1]-n[1]) < tol and np.abs(vz[2]-n[2]) < tol:   
             return True
         return False
-    
+
+
     def makeXYspecialMatrix(self, sinx, siny, cosx, cosy):
 
-        A = np.asmatrix([cosy, 0, -siny],
+        A = np.asmatrix([[cosy, 0, -siny],
                         [-sinx*siny, cosx, -sinx*cosy],
-                        [cosx*siny, sinx, cosx*cosy])
+                        [cosx*siny, sinx, cosx*cosy]])
         return A
+
 
     def draw(self, ax1, ax2, ax3, t):
 

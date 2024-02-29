@@ -60,6 +60,7 @@ class Track:
         self.dz = dz
         self.phi = phi
         self.eta = eta
+        self.theta = 2.0 * np.arctan(np.exp(-eta))
         self.pt = pt
         self.q = np.sign(q)
         self.pz = pt * np.sinh(eta) 

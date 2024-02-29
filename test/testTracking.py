@@ -40,11 +40,20 @@ if __name__ == "__main__":
     
     #An example track 
     #track = Track(0, 0, np.pi/2.0, 2.1, 10, 1.0)
-    track = Track(0, 0, np.pi/2.0, 2.15, 10, 1.0)
-    tracker.fullMeasurement(track)
-    etl.fullMeasurement(track)
-    track.plot_track(ax1, ax2, ax3, 'black')
-    track.plot_intersections(ax1, ax2, ax3, 'g*')
+    for i in range(0, 100):
+        for j in range(0, 100):
+            phi = np.pi/2.0 + np.pi/10 * (i-50.0)/100.0
+            eta = 2.16 + 0.4 * j / 100.0
+            track = Track(0, 0, phi, eta, 10, 1.0)
+            print(track.theta)
+            tracker.fullMeasurement(track)
+            valid = etl.fullMeasurement(track)
+            if valid:
+                print(phi, eta)
+
+    
+    #track.plot_track(ax1, ax2, ax3, 'black')
+    #track.plot_intersections(ax1, ax2, ax3, 'g*')
 
    
 
