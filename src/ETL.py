@@ -69,7 +69,7 @@ class ETL:
         for i, m in enumerate(self.modules):
             d = p - m.xnom
             #Is the module close enough?
-            if d[0]**2 + d[1]**2 < 100.0:
+            if d[0]**2 + d[1]**2 < 1600.0:
                 status, x, y, z, t = m.intersection(track)
                 statusm, xnom, ynom, znom, tnom = m.intersectionNom(track)
                 if status == True:
@@ -105,9 +105,7 @@ class ETL:
         track.tin = np.concatenate((track.tin, tn), axis=0)
         track.det = track.det + det
         
-        #Measurement
-       
-       
+        #Measurement     
         phi = np.arctan2(y, x)
         r = np.sqrt(y**2 + x**2)
         phin = np.arctan2(yn, xn)
@@ -141,6 +139,58 @@ class ETL:
         track.zmn = np.concatenate((track.zmn, z_measn), axis=0)
         track.tmn = np.concatenate((track.tmn, t_measn), axis=0)
 
+
+    def XYfromNormalVector(self, n):
+
+        siny = -n[0]
+        cosyp = np.sqrt(1.0 - siny*siny)
+        cosym = -cosyp
+        if np.abs(cosym) < 1e-7:
+            
+
+        cosxp = n[0]/cosyp
+        cosxm = n[0]/cosym
+        sinxp = np.sqrt/(1.0 - cosxp*cosxp)
+        sinxm = -sinxp
+        x = np.arccos(cosxp)
+        y = np.arccos(cosyp)
+              
+        if self.normalVectorMatches(n, sinxp, siny, cosxp, cosyp):
+            x = -x
+        elif self.normalVectorMatches(n, sinxp, siny, cosxp, cosym):
+            y = np.pi-y
+        elif self.normalVectorMatches(n, sinxp, siny, cosxm, cosyp):
+            x = np.pi-x
+        elif self.normalVectorMatches(n, sinxp, siny, cosxm, cosym):
+            x = np.pi-x
+            y = np.pi-y
+        elif self.normalVectorMatches(n, sinxm, siny, cosxp, cosyp):
+            x = -x
+        elif self.normalVectorMatches(n, sinxm, siny, cosxp, cosym):
+            x = -x
+            y = np.pi-y
+        elif self.normalVectorMatches(n, sinxm, siny, cosxm, cosyp):
+            x = np.pi + x
+        else:
+            x = np.pi + x
+            y = np.pi-y
+        return np.asarray([x,y,0.0])
+    
+    def normalVectorMatches(self, n, sinxm, siny, cosxp, cosyp):
+        
+        tol = 0.001
+        A = self.makeXYspecialMatrix(self, sinxm, siny, cosxp, cosyp)
+        vz = np.asarray(A.dot(z))[0]
+        if np.abs(vz[0]-n[0]) < tol and np.abs(vz[1]-n[1]) < tol and np.abs(vz[2]-n[2]) < tol:   
+            return True
+        return False
+    
+    def makeXYspecialMatrix(self, sinx, siny, cosx, cosy):
+
+        A = np.asmatrix([cosy, 0, -siny],
+                        [-sinx*siny, cosx, -sinx*cosy],
+                        [cosx*siny, sinx, cosx*cosy])
+        return A
 
     def draw(self, ax1, ax2, ax3, t):
 

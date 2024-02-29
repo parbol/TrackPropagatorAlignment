@@ -21,6 +21,10 @@ if __name__ == "__main__":
     ax1 = fig.add_subplot(1, 3, 2, projection = '3d')
     ax2 = fig.add_subplot(1, 3, 1)
     ax3 = fig.add_subplot(1, 3, 3)
+    ax1.xaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
+    ax1.yaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
+    ax1.zaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
+    
     #configuring the tracker
     layers = np.linspace(1, 100, 20)
     layersz = np.linspace(130, 270, 5)
