@@ -77,7 +77,7 @@ class Track:
         self.z_cp = self.dz       
 
         #Circle description
-        self.rt = self.q * pt / b * (1000.0/3.0)
+        self.rt = pt / (self.q * b) * (1000.0/2.998)
         self.x_c = self.rt * np.sin(phi) + self.x_cp
         self.y_c = -self.rt * np.cos(phi) + self.y_cp
         
@@ -139,5 +139,12 @@ class Track:
         ax2.plot(0, 0, 'rx')
         ax3.plot(z, y, fmt)
             
-
-
+    def print(self):
+        print('----Track info-----')
+        print('x Poca:', self.x_cp)
+        print('y Poca:', self.y_cp)
+        print('z Poca:', self.z_cp)
+        print('px:', self.pt*np.cos(self.phi))
+        print('py:', self.pt*np.sin(self.phi))
+        print('pz:', self.pz)
+        print('q/pt:', self.q/self.pt)

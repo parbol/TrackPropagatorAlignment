@@ -103,6 +103,7 @@ class Module:
         
         x, y, z, t = self.plane.intersection(track)
         print('Real')
+        print('Belongs To plane:', self.plane.belongsToPlane(x,y,z))
         print(x, y, z, t)
         p = np.asarray([x, y, z])
         plocal = self.toLocal(p)

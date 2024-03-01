@@ -129,12 +129,15 @@ if __name__=='__main__':
 #            print('Real', n-nnew)   
     
 
-    theta = np.pi/4.0
-    phi = 0
+    theta = np.pi/4
+    phi = -np.pi/4
     n = np.asarray([np.cos(phi)*np.sin(theta), np.sin(phi)*np.sin(theta), np.cos(theta)])
     p = np.asarray([0.0, 100.0, 300.0])
     plane = Plane(p[0], p[1], p[2], n[0], n[1], n[2])
-    track = Track(0, 0, np.pi/2.0, 2.16, 1000, 1.0)
-    print(track.theta)
+    track = Track(0.2, 0.1, np.pi/4.0, 2.16, 10, 1.0)
+    track.print()
+    x, y, z, t = plane.intersection(track)
+    print(plane.belongsToPlane(x,y,z))
     print(plane.intersection(track))
+    print(plane.intersectionStraight(track.x_cp, track.y_cp, track.z_cp, track.pt*np.cos(track.phi), track.pt*np.sin(track.phi), track.pz))
 

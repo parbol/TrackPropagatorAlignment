@@ -64,30 +64,27 @@ class Plane:
         
         return x, y, z, t
 
+    def intersectionStraight(self, x0, y0, z0, vx, vy, vz):
 
-    def intersection2(self, track):
+        A = self.n[0]
+        B = self.n[1]
+        C = self.n[2]
+        D = -(A*self.p[0]+B*self.p[1]+C*self.p[2])
+        Delta = A * x0 + B * y0 + C * z0
+        Kapa = A * vx + B * vy + C * vz
+        t = (-Delta-D)/Kapa
+        x = x0 + vx * t
+        y = y0 + vy * t
+        z = z0 + vz * t
+        return x, y, z
+    
+    def belongsToPlane(self, x, y, z):
 
-        Delta = self.n[0] * track.x_c + self.n[1] * track.y_c + self.n[2] * track.dz
-        alpha = track.rt**2*(self.n[0]**2+self.n[1]**2)
-        beta = 2.0 * Delta * track.rt  * self.n[1]
-        gamma = Delta**2 - track.rt**2 * self.n[0]**2
-        sp = (-beta + np.sqrt(beta**2-4.0*alpha*gamma))/(2.0*alpha)
-        sm = (-beta - np.sqrt(beta**2-4.0*alpha*gamma))/(2.0*alpha)
-        tp = 1.0/track.w * (np.arcsin(sp) + track.phi)
-        tm = 1.0/track.w * (np.arcsin(sm) + track.phi)
-        t = 0
-        if tm < 0 and tp >= 0:
-            t = tp
-        if tm >= 0 and tp < 0:
-            t = tm
-        if tm < 0 and tp < 0:
-            print('ERror')
-            sys.exit()
-        if tm >= 0 and tp >= 0:
-            if tm > tp:
-                t = tp
-            else:
-                t = tm
-                    
-        x,y,z = track.eval(t)
-        return x, y, z, t   
+        A = self.n[0]
+        B = self.n[1]
+        C = self.n[2]
+        D = -(A*self.p[0]+B*self.p[1]+C*self.p[2])
+        k = A * x + B * y + C *z + D
+        if np.abs(k) < 1e-3:
+            return True
+        return False
