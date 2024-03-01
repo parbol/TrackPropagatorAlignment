@@ -137,7 +137,10 @@ if __name__=='__main__':
     track = Track(0.2, 0.1, np.pi/4.0, 2.16, 10, 1.0)
     track.print()
     x, y, z, t = plane.intersection(track)
-    print(plane.belongsToPlane(x,y,z))
+    if plane.belongsToPlane(x,y,z):
+        print('oh yess')
+    else:
+        print('oh no')
     print(plane.intersection(track))
     print(plane.intersectionStraight(track.x_cp, track.y_cp, track.z_cp, track.pt*np.cos(track.phi), track.pt*np.sin(track.phi), track.pz))
 

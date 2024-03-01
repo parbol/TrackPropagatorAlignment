@@ -101,10 +101,10 @@ class Module:
 
     def intersection(self, track):
         
-        x, y, z, t = self.plane.intersection(track)
-        print('Real')
-        print('Belongs To plane:', self.plane.belongsToPlane(x,y,z))
-        print(x, y, z, t)
+        status, x, y, z, t = self.plane.intersection(track)
+        if not status:
+            return False, x, y, z, t
+        print('The point is in the plane, but...')
         p = np.asarray([x, y, z])
         plocal = self.toLocal(p)
         print(plocal)
@@ -114,9 +114,9 @@ class Module:
     
     def intersectionNom(self, track):
         
-        x, y, z, t = self.planeNom.intersection(track)
-        #print('Nom')
-        #print(x, y, z, t)
+        status, x, y, z, t = self.planeNom.intersection(track)
+        if not status:
+            return False, x, y, z, t
         p = np.asarray([x, y, z])
         plocal = self.toLocalNom(p)
         #print(plocal)

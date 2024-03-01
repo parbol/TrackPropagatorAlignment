@@ -53,7 +53,7 @@ class Plane:
             r = track.rt
             w = track.w
             phi = track.phi
-            pzct = 29.98/(track.gamma*track.m)
+            pzct = 29.98/(track.gamma*track.m) * track.pz
             x0 = track.x_cp
             y0 = track.y_cp
             z0 = track.dz
@@ -65,15 +65,18 @@ class Plane:
         
         t_min = (track.gamma*track.m) / (29.98*track.pz) * (z_min - track.dz)
         t_max = (track.gamma*track.m) / (29.98*track.pz) * (z_max - track.dz)
-        
-        print(t_min, t_max)
-        print(fmin(0))
-        print(fmin(t_max))
-        t = optimize.brentq(fmin, 0, t_max)
+       
+        if fmin(t_min) * fmin(t_max) > 0:
+            t_min = 0.0
+        if fmin(t_min) * fmin(t_max) > 0:
+            return False, -1.0, -1.0, -1.0, -1.0
+        t = optimize.brentq(fmin, t_min, t_max)
 
         x,y,z = track.eval(t)           
-        
-        return x, y, z, t
+        if self.belongsToPlane(x, y, z):
+            return True, x, y, z, t
+        else:
+            return False, x, y, z, t
 
 
     def intersectionStraight(self, x0, y0, z0, vx, vy, vz):

@@ -63,7 +63,9 @@ class ETL:
 
     def intersection(self, track):
 
-        x_, y_, z_, t_ = self.plane.intersection(track)
+        valid, x_, y_, z_, t_ = self.plane.intersection(track)
+        if not valid:
+            return False, False, [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [-1]
         p = np.asarray([x_, y_, z_])
         status = statusm = True
         x = y = z = t = xnom = ynom = znom = tnom = 0.0
@@ -87,7 +89,7 @@ class ETL:
         #Intersection
         status, statusm, v, vn, det = self.intersection(track)
         if not status:
-            return
+            return False
         
         x = np.asarray([v[0]])
         y = np.asarray([v[1]])
@@ -142,7 +144,9 @@ class ETL:
         track.zmn = np.concatenate((track.zmn, z_measn), axis=0)
         track.tmn = np.concatenate((track.tmn, t_measn), axis=0)
 
-
+        return True
+    
+    
     def XYfromNormalVector(self, n):
     
         siny = -n[0]    
