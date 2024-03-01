@@ -129,8 +129,8 @@ if __name__=='__main__':
 #            print('Real', n-nnew)   
     
 
-    theta = np.pi/4
-    phi = -np.pi/4
+    theta = 0
+    phi = 0
     n = np.asarray([np.cos(phi)*np.sin(theta), np.sin(phi)*np.sin(theta), np.cos(theta)])
     p = np.asarray([0.0, 100.0, 300.0])
     plane = Plane(p[0], p[1], p[2], n[0], n[1], n[2])
