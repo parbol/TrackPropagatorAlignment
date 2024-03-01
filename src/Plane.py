@@ -39,7 +39,27 @@ class Plane:
         self.rot = np.asmatrix(mat)
         self.invrot = np.linalg.inv(self.rot)
 
+
+    def fmin(self, t, a, b, args, track):
+        A = self.n[0]
+        B = self.n[1]
+        C = self.n[2]
+        D = -(A*self.p[0]+B*self.p[1]+C*self.p[2])
+        r = args[0]
+        w = args[1]
+        phi = args[2]
+        pzct = args[3]
+        x0 = args[4]
+        y0 = args[5]
+        z0 = args[6]
+        Delta = A * x0 + B * y0 + C * z0
+        return Delta + D + A * r * sin(w*t-phi) + B * r * cos(w*t-phi) + pzct * t
+    
+
+
     def intersection(self, track):
+
+        args = (track.rt, track.w)
 
         trackpoint = np.asarray([track.x_cp, track.y_cp, track.z_cp])
         trackMomentum = np.asarray([track.pt*np.cos(track.phi),
