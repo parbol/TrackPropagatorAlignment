@@ -42,8 +42,6 @@ class Plane:
 
     def intersection(self, track):
 
-        #args = (track.rt, track.w, track.phi, 29.98/(track.gamma*track.m), track.x_cp, track.y_cp, track.z_cp)
-
         def fmin(t):
         
             A = self.n[0]
@@ -53,15 +51,15 @@ class Plane:
             r = track.rt
             w = track.w
             phi = track.phi
-            pzct = 29.98/(track.gamma*track.m) * track.pz
-            x0 = track.x_cp
-            y0 = track.y_cp
+            pzct = (29.98/(track.gamma*track.m)) * track.pz
+            x0 = track.x_c
+            y0 = track.y_c
             z0 = track.dz
             Delta = A * x0 + B * y0 + C * z0
-            return Delta + D + A * r * np.sin(w*t-phi) + B * r * np.cos(w*t-phi) + pzct * t
+            return Delta + D + A * r * np.sin(w*t-phi) + B * r * np.cos(w*t-phi) + C * pzct * t
     
-        z_min = 0.5*self.p[2]
-        z_max = 1.5*self.p[2]
+        z_min = 0.0*self.p[2]
+        z_max = 20.0*self.p[2]
         
         t_min = (track.gamma*track.m) / (29.98*track.pz) * (z_min - track.dz)
         t_max = (track.gamma*track.m) / (29.98*track.pz) * (z_max - track.dz)
@@ -70,8 +68,8 @@ class Plane:
             t_min = 0.0
         if fmin(t_min) * fmin(t_max) > 0:
             return False, -1.0, -1.0, -1.0, -1.0
-        t = optimize.brentq(fmin, t_min, t_max)
-
+        s = optimize.brentq(fmin, t_min, t_max, full_output=True, disp=True)
+        t = s[0]
         x,y,z = track.eval(t)           
         if self.belongsToPlane(x, y, z):
             return True, x, y, z, t

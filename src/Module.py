@@ -74,21 +74,26 @@ class Module:
         self.pUL = self.toGlobal(self.pULlocal)
         self.pUR = self.toGlobal(self.pURlocal)
  
+
     def toGlobal(self, v):
 
         return self.x + np.asarray(self.rot.dot(v))[0]
-    
+
+
     def toGlobalNom(self, v):
 
         return self.xnom + np.asarray(self.rotnom.dot(v))[0]
-    
+
+
     def toLocal(self, v):
 
         return np.asarray(self.invrot.dot(v - self.x))[0]
-    
+
+
     def toLocalNom(self, v):
 
         return np.asarray(self.invrotnom.dot(v - self.xnom))[0]
+ 
     
     def isInside(self, p):
 
@@ -100,18 +105,16 @@ class Module:
     
 
     def intersection(self, track):
-        
         status, x, y, z, t = self.plane.intersection(track)
         if not status:
             return False, x, y, z, t
-        print('The point is in the plane, but...')
         p = np.asarray([x, y, z])
         plocal = self.toLocal(p)
-        print(plocal)
         if self.isInside(plocal):
             return True, x, y, z, t
         return False, x, y, z, t
-    
+
+
     def intersectionNom(self, track):
         
         status, x, y, z, t = self.planeNom.intersection(track)
@@ -119,10 +122,10 @@ class Module:
             return False, x, y, z, t
         p = np.asarray([x, y, z])
         plocal = self.toLocalNom(p)
-        #print(plocal)
         if self.isInside(plocal):
             return True, x, y, z, t
         return False, x, y, z, t
+
 
     def drawModule(self, ax1, ax2, ax3, t):
 

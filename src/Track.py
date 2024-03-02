@@ -66,7 +66,7 @@ class Track:
         self.pz = pt * np.sinh(eta) 
 
         #Some constants, maybe wise to put them somewhere else
-        self.m = 0.140
+        self.m = 0.1396
         b = 3.8
         self.gamma = np.sqrt(self.pt**2 + self.pz**2 + self.m**2)/self.m
         self.w = self.q * 0.089880 * b / (self.gamma * self.m)

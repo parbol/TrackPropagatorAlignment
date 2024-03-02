@@ -19,6 +19,7 @@ class ETL:
         # rphi_error: uncertainty in rphi
         # z_error: undertainty in z
         # t_error: time uncertainty
+        #####################################################################################################
         self.z = z
         self.rphi_error = rphi_error
         self.z_error = z_error
@@ -28,7 +29,7 @@ class ETL:
         self.firstcenterRightY = outterR - shifty
         self.firstcenterLeftX = +shiftx
         self.modules = []
-        tanphi = np.tan(np.pi/6.0)        
+        tanphi = np.tan(np.pi/3.0)        
         for i in range(ncolumns):
             for j in range(nrows):
                 x = self.firstcenterRightX - i * (gapx + Lx)
@@ -65,6 +66,7 @@ class ETL:
 
         valid, x_, y_, z_, t_ = self.plane.intersection(track)
         if not valid:
+            print('Plane intersetion not valid')
             return False, False, [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [-1]
         p = np.asarray([x_, y_, z_])
         status = statusm = True
@@ -75,10 +77,12 @@ class ETL:
             d = p - m.xnom
             #Is the module close enough?
             if d[0]**2 + d[1]**2 < 1600.0:
-                status, x, y, z, t = m.intersection(track)
+                status, x, y, z, t = m.intersection(track)      
                 statusm, xnom, ynom, znom, tnom = m.intersectionNom(track)
                 if status == True:
-                    v = [x, y, z, t]
+                    x = np.asarray([x, y, z])
+                    xt = m.toGlobalNom(m.toLocal(x))
+                    v = [xt[0], xt[1], xt[2], t]
                     vn = [xnom, ynom, znom, tnom]
                     return True, statusm, v, vn, [2]
         return False, statusm, v, vn, [2]
