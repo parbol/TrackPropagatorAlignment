@@ -29,7 +29,7 @@ class ETL:
         self.firstcenterRightY = outterR - shifty
         self.firstcenterLeftX = +shiftx
         self.modules = []
-        tanphi = np.tan(np.pi/3.0)        
+        tanphi = (outterR- innerR)/0.1      
         for i in range(ncolumns):
             for j in range(nrows):
                 x = self.firstcenterRightX - i * (gapx + Lx)
@@ -76,7 +76,7 @@ class ETL:
         for i, m in enumerate(self.modules):
             d = p - m.xnom
             #Is the module close enough?
-            if d[0]**2 + d[1]**2 < 1600.0:
+            if d[0]**2 + d[1]**2 < 100.0:
                 status, x, y, z, t = m.intersection(track)      
                 statusm, xnom, ynom, znom, tnom = m.intersectionNom(track)
                 if status == True:

@@ -3,8 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from random import Random
 import sys
-import h5py
-import pandas as pd
 
 
 from src.Tracker import Tracker
@@ -47,7 +45,7 @@ if __name__ == "__main__":
     #valid = etl.fullMeasurement(track)
     counter = 0
     alist = []
-    while counter < 10000:
+    while counter < 10:
         phi = np.random.uniform(0, 2.0*np.pi)
         eta = np.random.uniform(1.6, 3.0)
         pt = np.random.uniform(1.0, 50.0)
@@ -65,13 +63,11 @@ if __name__ == "__main__":
             zin = track.zin[n-1]
             tin = track.tin[n-1]
             a = [xi, yi, zi, ti, xin, yin, zin, tin]
-            alist.append(a)
+            print(xi, yi, zi, ti, xin, yin, zin, tin, pt, eta)
             counter = counter + 1
-
-    df = pd.DataFrame(np.asmatrix(alist))
-    df.to_hdf('datos.h5', '/data/d1')
+           
     
-    #plt.show()
+    plt.show()
 
 
 
