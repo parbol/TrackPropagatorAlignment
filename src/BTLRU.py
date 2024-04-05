@@ -20,7 +20,13 @@ class BTLRU:
         self.interspaceY = (self.TrayWidth - 3.0 * self.ModuleWidth)/2.0
         self.interspaceZ = (self.RULength - 8.0 * self.ModuleLength)/7.0
         
-        self.RUSpace = (self.TrayWidth - 6.0 * self.RULength)/5.0
+        self.vz = np.asarray([0.0, 0.0, 1.0])
+        vx0 = self.vz[1] * self.n[1] - self.vz[2] * self.n[2]
+        vy0 = self.vz[2] * self.n[0] - self.vz[0] * self.n[2]
+        vz0 = self.vz[0] * self.n[1] - self.vz[1] * self.n[0]
+        vn = np.asarray([vx0, vy0, vz0])
+        self.vn = vn/np.linalg.norm(vn)
+
         self.zFirstRU = z - TrayLength/2.0 + self.RULength/2.0
         self.RUs = []
       
