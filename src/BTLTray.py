@@ -20,14 +20,16 @@ class BTLTray:
         self.t_error = tError
       
         self.RUSpace = (self.TrayWidth - 6.0 * self.RULength)/5.0
-        self.zFirstRU = z - TrayLength/2.0 + self.RULength/2.0
+        self.zFirstRU = np.abs(z) - TrayLength/2.0 + self.RULength/2.0
+        if side == -1:
+            self.zFirstRU = -1.0 * self.zFirstRU
         self.RUs = []
-        ru11 = BTLRU(1, 1, x, y, self.zFirstRU, self.TrayWidth, self.RULength, self.ModuleLength, self.ModuleWidth, self.rphi_error, self.z_error, self.t_error)
-        ru12 = BTLRU(1, 2, x, y, self.zFirstRU + (self.RULength + self.RUSpace), self.TrayWidth, self.RULength, self.ModuleLength, self.ModuleWidth, self.rphi_error, self.z_error, self.t_error)
-        ru21 = BTLRU(2, 1, x, y, self.zFirstRU + 2.0*(self.RULength + self.RUSpace), self.TrayWidth, self.RULength, self.ModuleLength, self.ModuleWidth, self.rphi_error, self.z_error, self.t_error)
-        ru22 = BTLRU(2, 2, x, y, self.zFirstRU + 3.0*(self.RULength + self.RUSpace), self.TrayWidth, self.RULength, self.ModuleLength, self.ModuleWidth, self.rphi_error, self.z_error, self.t_error)
-        ru31 = BTLRU(3, 1, x, y, self.zFirstRU + 4.0*(self.RULength + self.RUSpace), self.TrayWidth, self.RULength, self.ModuleLength, self.ModuleWidth, self.rphi_error, self.z_error, self.t_error)
-        ru32 = BTLRU(3, 2, x, y, self.zFirstRU + 5.0*(self.RULength + self.RUSpace), self.TrayWidth, self.RULength, self.ModuleLength, self.ModuleWidth, self.rphi_error, self.z_error, self.t_error)
+        ru11 = BTLRU(1, 1, side, x, y, self.zFirstRU, self.TrayWidth, self.RULength, self.ModuleLength, self.ModuleWidth, self.rphi_error, self.z_error, self.t_error)
+        ru12 = BTLRU(1, 2, side, x, y, self.zFirstRU + side * (self.RULength + self.RUSpace), self.TrayWidth, self.RULength, self.ModuleLength, self.ModuleWidth, self.rphi_error, self.z_error, self.t_error)
+        ru21 = BTLRU(2, 1, side, x, y, self.zFirstRU + side * 2.0*(self.RULength + self.RUSpace), self.TrayWidth, self.RULength, self.ModuleLength, self.ModuleWidth, self.rphi_error, self.z_error, self.t_error)
+        ru22 = BTLRU(2, 2, side, x, y, self.zFirstRU + side * 3.0*(self.RULength + self.RUSpace), self.TrayWidth, self.RULength, self.ModuleLength, self.ModuleWidth, self.rphi_error, self.z_error, self.t_error)
+        ru31 = BTLRU(3, 1, side, x, y, self.zFirstRU + side * 4.0*(self.RULength + self.RUSpace), self.TrayWidth, self.RULength, self.ModuleLength, self.ModuleWidth, self.rphi_error, self.z_error, self.t_error)
+        ru32 = BTLRU(3, 2, side, x, y, self.zFirstRU + side * 5.0*(self.RULength + self.RUSpace), self.TrayWidth, self.RULength, self.ModuleLength, self.ModuleWidth, self.rphi_error, self.z_error, self.t_error)
         self.RUs.append(ru11)
         self.RUs.append(ru12)
         self.RUs.append(ru21)

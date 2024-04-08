@@ -1,11 +1,11 @@
 from src.Plane import Plane
-from src.Module import Module
+from src.BTLModule import BTLModule
 import numpy as np
 import sys
 
 class BTLRU:
     
-    def __init__(self, type, n, x, y, z, TrayWidth, RULength, ModuleLength, ModuleWidth, rphiError, zError, tError):
+    def __init__(self, type, n, side, x, y, z, TrayWidth, RULength, ModuleLength, ModuleWidth, rphiError, zError, tError):
 
         self.r = np.asarray([x, y, z])
         self.n = self.r/np.linalg.norm(self.r)
@@ -23,12 +23,23 @@ class BTLRU:
         vn = np.asarray([-self.n[1], self.n[0], 0.0])
         self.vn = vn/np.linalg.norm(vn)
 
-        self.zFirstModule = z - TrayLength/2.0 + self.RULength/2.0
-        self.RUs = []
-      
-
-      
-
+        self.zFirstModule = np.abs(z) - self.RULength/2.0 + self.ModuleLength/2.0   
+        if side == -1:
+            self.zFirstModule = -1.0 * self.zFirstModule
+        
+        self.Modules = []
+        counter = 1
+        for i in range(-1, 2):
+            for j in range(0, 8):
+                xpos = self.r[0] + i * (self.ModuleWidth + self.interspaceY) * self.vn[0]                                
+                ypos = self.r[1] + i * (self.ModuleWidth + self.interspaceY) * self.vn[1]
+                zpos = self.zFirstModule + side * j * (self.ModuleLength + self.interspaceZ)
+                mbtl = BTLModule(counter, type, n, side, xpos, ypos, zpos, self.n[0], self.n[1], self.n[2], self.ModuleLength, self.ModuleWidth, self.rphi_error, self.z_error, self.t_error)
+                self.Modules.append(mbtl)
+                counter = counter + 1
+    
+    
+    
     def intersection(self, track):
 
         valid, x_, y_, z_, t_ = self.plane.intersection(track)
