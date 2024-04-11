@@ -1,45 +1,26 @@
 from src.Plane import Plane
-from src.BTLModule import BTLModule
+from src.Module import Module
 import numpy as np
 import sys
 
-class BTLRU:
+class BTLModule:
     
-    def __init__(self, type, n, side, x, y, z, euler, TrayWidth, RULength, ModuleLength, ModuleWidth, rphiError, zError, tError):
+    def __init__(self, m, type, n, side, x, y, z, euler, ModuleLength, ModuleWidth, rphiError, zError, tError):
 
         self.r = np.asarray([x, y, z])
-        self.n = self.r/np.linalg.norm(self.r)
-        self.TrayWidth = TrayWidth
-        self.RULength = RULength
+        self.n = np.asarray([vx, vy, vz])
         self.ModuleLength = ModuleLength
         self.ModuleWidth = ModuleWidth 
         self.rphi_error = rphiError
         self.z_error = zError
         self.t_error = tError
+        self.module = m
+        self.type = type
+        self.n = n
+        self.side = side
         self.eulerAngles = euler
         
-        self.interspaceY = (self.TrayWidth - 3.0 * self.ModuleWidth)/2.0
-        self.interspaceZ = (self.RULength - 8.0 * self.ModuleLength)/7.0
-        
-        vn = np.asarray([-self.n[1], self.n[0], 0.0])
-        self.vn = vn/np.linalg.norm(vn)
-
-        self.zFirstModule = np.abs(z) - self.RULength/2.0 + self.ModuleLength/2.0   
-        if side == -1:
-            self.zFirstModule = -1.0 * self.zFirstModule
-        
-        self.Modules = []
-        counter = 1
-        for i in range(-1, 2):
-            for j in range(0, 8):
-                xpos = self.r[0] + i * (self.ModuleWidth + self.interspaceY) * self.vn[0]                                
-                ypos = self.r[1] + i * (self.ModuleWidth + self.interspaceY) * self.vn[1]
-                zpos = self.zFirstModule + side * j * (self.ModuleLength + self.interspaceZ)
-                mbtl = BTLModule(counter, type, n, side, xpos, ypos, zpos, self.eulerAngles, self.ModuleLength, self.ModuleWidth, self.rphi_error, self.z_error, self.t_error)
-                self.Modules.append(mbtl)
-                counter = counter + 1
-    
-    
+        self.module = Module()
     
     def intersection(self, track):
 

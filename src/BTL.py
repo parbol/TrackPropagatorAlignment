@@ -1,7 +1,7 @@
 from src.Plane import Plane
 from src.Module import Module
 from src.BTLTray import BTLTray
-
+from src.EulerRotation import EulerRotation
 import numpy as np
 import sys
 
@@ -44,12 +44,15 @@ class BTL:
         
         positiveTrays = []
         negativeTrays = []
+        eulerAngles = []
         for i in range(0, 18):
             phi = self.TrayStartPhi + self.anglePerTray/2.0 + i * (self.anglePerTray+self.traySpace)
             x = self.R * np.cos(phi)
             y = self.R * np.sin(phi)
             zp = self.zOfPositiveTrays
             zm = self.zOfNegativeTrays
+            euler = EulerRotation(vx = vx, vy = vy, vz = vz)
+            eulerAngles.append(euler)
             positiveTrays.append([x, y, zp])
             negativeTrays.append([x, y, zm])
         
@@ -57,6 +60,11 @@ class BTL:
             phi = 2.0 * self.TrayStartPhi + self.TrayStartPhi + self.anglePerTray/2.0 + i * (self.anglePerTray+self.traySpace)
             x = self.R * np.cos(phi)
             y = self.R * np.sin(phi)
+            vx = np.asarray([np.sin(phi), -np.cos(phi), 0.0])
+            vy = np.asarray([0.0, 0.0, 1.0])
+            vz = np.asarray([np.cos(phi), np.sin(phi), 0.0])
+            euler = EulerRotation(vx = vx, vy = vy, vz = vz)
+            eulerAngles.append(euler)
             zp = self.zOfPositiveTrays
             zm = self.zOfNegativeTrays
             positiveTrays.append([x, y, zp])
@@ -65,10 +73,10 @@ class BTL:
         self.pTrays = []
         self.mTrays = []
         for i, t in enumerate(positiveTrays):
-            tray = BTLTray(i+1, 1, t[0], t[1], t[2], self.TrayWidth, self.TrayLength, self.RULength, self.ModuleLength, self.ModuleWidth, self.rphi_error, self.z_error, self.t_error)
+            tray = BTLTray(i+1, 1, t[0], t[1], t[2], eulerAngles[i], self.TrayWidth, self.TrayLength, self.RULength, self.ModuleLength, self.ModuleWidth, self.rphi_error, self.z_error, self.t_error)
             self.pTrays.append(tray)
         for i, t in enumerate(negativeTrays):
-            tray = BTLTray(i+1, -1, t[0], t[1], t[2], self.TrayWidth, self.TrayLength, self.RULength, self.ModuleLength, self.ModuleWidth, self.rphi_error, self.z_error, self.t_error)
+            tray = BTLTray(i+1, -1, t[0], t[1], t[2], eulerAngles[i], self.TrayWidth, self.TrayLength, self.RULength, self.ModuleLength, self.ModuleWidth, self.rphi_error, self.z_error, self.t_error)
             self.mTrays.append(tray)
                 
 
