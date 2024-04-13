@@ -4,25 +4,24 @@ import sys
 
 class EulerRotation():
 
-    def __init__(self, angles=None, vx=None, vy=None, vz=None):
+    def __init__(self, psi = 0.0, theta = 0.0, phi = 0.0):
         
-        if angles == None and (vx == None or vy == None or vz == None):
-            print('Wrong definition of EulerRotation')
-            sys.exit()
-        if angles == None:
-            self.rot = self.makeMatrixFromVector(vx, vy, vz)
-            self.vx = vx
-            self.vy = vy
-            self.vz = vz
-            self.psi, self.theta, self.phi = self.fromMatrixToAngle(self.rot)
-        else:
-            self.psi = angles[0]
-            self.theta = angles[1]
-            self.phi = angles[2]
-            self.rot = self.makeMatrix(self.psi, self.theta, self.phi)
-            self.vx, self.vy, self.vz = self.fromMatrixToVectors(self.rot)
+        self.psi = psi
+        self.theta = theta
+        self.phi = phi
+        self.rot = self.makeMatrix(self.psi, self.theta, self.phi)
+        self.vx, self.vy, self.vz = self.fromMatrixToVectors(self.rot)
+        self.invrot = np.linalg.inv(self.rot)
+
+
+    def setFromVectors(self, vx, vy, vz):
         
-        self.invrot = np.linalg.inv(self.rotnom)
+        self.rot = self.makeMatrixFromVector(vx, vy, vz)
+        self.vx = vx
+        self.vy = vy
+        self.vz = vz
+        self.psi, self.theta, self.phi = self.fromMatrixToAngle(self.rot)
+        self.invrot = np.linalg.inv(self.rot)
 
     def fromMatrixToVectors(self, A):
 

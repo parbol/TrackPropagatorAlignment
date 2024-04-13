@@ -91,14 +91,6 @@ class Track:
         self.ym = np.asarray([])
         self.zm = np.asarray([])
         self.tm = np.asarray([])
-        self.xin = np.asarray([])
-        self.yin = np.asarray([])
-        self.zin = np.asarray([])
-        self.tin = np.asarray([])
-        self.xmn = np.asarray([])
-        self.ymn = np.asarray([])
-        self.zmn = np.asarray([])
-        self.tmn = np.asarray([])
         self.lastT = 0
 
     

@@ -29,16 +29,19 @@ class Module:
         self.pLR = self.toGlobal(self.pLRlocal)
         self.pUL = self.toGlobal(self.pULlocal)
         self.pUR = self.toGlobal(self.pURlocal)
- 
+
+
 
     def toGlobal(self, v):
 
-        return self.x + np.asarray(self.rot.dot(v))[0]
+        return self.x + self.eulerAngles.apply(v)
+
 
 
     def toLocal(self, v):
 
-        return np.asarray(self.invrot.dot(v - self.x))[0]
+        return self.eulerAngles.applyInverse(v - self.x)
+    
 
 
     def isInside(self, p):
@@ -49,6 +52,7 @@ class Module:
             return False
         return True
     
+
 
     def intersection(self, track):
         status, x, y, z, t = self.plane.intersection(track)
@@ -61,12 +65,12 @@ class Module:
         return False, x, y, z, t
 
 
+
     def drawModule(self, ax1, ax2, ax3, t):
 
         x_start = [self.pLL[0], self.pLR[0], self.pUR[0], self.pUL[0], self.pLL[0]]
         y_start = [self.pLL[1], self.pLR[1], self.pUR[1], self.pUL[1], self.pLL[1]]
         z_start = [self.pLL[2], self.pLR[2], self.pUR[2], self.pUL[2], self.pLL[2]]
-
         ax1.plot3D(x_start , z_start, y_start, t)
         ax2.plot(x_start, y_start, t)
         ax3.plot(z_start, y_start, t)
