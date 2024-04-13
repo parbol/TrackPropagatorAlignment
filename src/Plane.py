@@ -58,14 +58,14 @@ class Plane:
             Delta = A * x0 + B * y0 + C * z0
             return Delta + D + A * r * np.sin(w*t-phi) + B * r * np.cos(w*t-phi) + C * pzct * t
     
-        z_min = 0.0*self.p[2]
-        z_max = 20.0*self.p[2]
+    
         
-        t_min = (track.gamma*track.m) / (29.98*track.pz) * (z_min - track.dz)
-        t_max = (track.gamma*track.m) / (29.98*track.pz) * (z_max - track.dz)
-       
-        if fmin(t_min) * fmin(t_max) > 0:
-            t_min = 0.0
+        #t_min = (track.gamma*track.m) / (29.98*track.pz) * (z_min - track.dz)
+        #t_max = (track.gamma*track.m) / (29.98*track.pz) * (z_max - track.dz)
+        #ftmin = fmin(t_min)
+
+        t_min = 0.0
+        t_max = 6.0
         if fmin(t_min) * fmin(t_max) > 0:
             return False, -1.0, -1.0, -1.0, -1.0
         s = optimize.brentq(fmin, t_min, t_max, full_output=True, disp=True)

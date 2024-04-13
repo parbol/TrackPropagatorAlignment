@@ -93,7 +93,7 @@ class BTL:
             if np.abs(i.phi-phi) < minPhi:
                 minPhi = np.abs(i.phi-phi)
                 index = j
-        return j
+        return index
 
 
     def intersection(self, track):
@@ -107,21 +107,17 @@ class BTL:
             trays = self.mTrays
 
         trayNumber = self.getClosestTray(phi, trays)
-        valid, x, y, z, t = trays[trayNumber].intersection(track)
-        if valid:
-            return True, [x, y, z, t], [3]
-        trayNumberMinus = trayNumber-1
-        if trayNumberMinus == -1:
-            trayNumberMinus = 35
-        valid, x, y, z, t = trays[trayNumberMinus].intersection(track)
-        if valid:
-            return True, [x, y, z, t], [3]
-        trayNumberPlus = trayNumber + 1
-        if trayNumberPlus == 36:
-            trayNumberPlus = 0
-        valid, x, y, z, t = trays[trayNumberMinus].intersection(track)
-        if valid:
-            return True, [x, y, z, t], [3]            
+        navigationWindow = 2
+        navigationList = []
+        for i in range(0, navigationWindow+1):
+            navigationList.append(i)
+            if i != 0:
+                navigationList.append(-i)
+        for i in navigationList:
+            checkTrayNumber = (trayNumber + i) % 36
+            valid, x, y, z, t = trays[checkTrayNumber].intersection(track)
+            if valid:
+                return True, [x, y, z, t], [3]
         return False, [0, 0, 0, 0], [3]
 
 
@@ -171,7 +167,7 @@ class BTL:
       
 
     def draw(self, ax1, ax2, ax3, t):
-        #self.pTrays[0].draw(ax1, ax2, ax3, t)
+
         for m in self.pTrays:
             m.draw(ax1, ax2, ax3, t)
         for m in self.mTrays:

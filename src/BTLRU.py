@@ -8,7 +8,8 @@ class BTLRU:
     def __init__(self, type, n, side, x, y, z, euler, TrayWidth, RULength, ModuleLength, ModuleWidth, rphiError, zError, tError):
 
         self.r = np.asarray([x, y, z])
-        self.n = self.r/np.linalg.norm(self.r)
+        normal = np.asarray([self.r[0], self.r[1], 0.0])
+        self.n = normal/np.linalg.norm(normal)
         self.TrayWidth = TrayWidth
         self.RULength = RULength
         self.ModuleLength = ModuleLength
@@ -40,14 +41,14 @@ class BTLRU:
     
     
     def intersection(self, x, y, z, track):
-
+        
         for m in self.Modules:
             dz = np.abs(z-m.r[2])
             dxy = np.sqrt((x-m.r[0])**2+(y-m.r[1])**2)
             if dz < m.ModuleLength/2.0 and dxy < m.ModuleWidth/2.0:
-                    valid, x, y, z, t = m.intersection(x, y, z, track)
-                    if valid:
-                        return True, x, y, z, t
+                valid, x, y, z, t = m.intersection(x, y, z, track)
+                if valid:
+                    return True, x, y, z, t
         return False, 0, 0, 0, 0
     
 

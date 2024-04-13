@@ -22,7 +22,7 @@ class BTLModule:
         self.module = Module(self.r, self.eulerAngles, self.ModuleWidth, self.ModuleLength)
     
    
-    def intersection(x, y, z, track):
+    def intersection(self, x, y, z, track):
 
         return self.module.intersection(track)
 

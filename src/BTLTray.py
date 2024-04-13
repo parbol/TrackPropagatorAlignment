@@ -12,8 +12,8 @@ class BTLTray:
     def __init__(self, n, side, x, y, z, euler, TrayWidth, TrayLength, RULength, ModuleLength, ModuleWidth, rphiError, zError, tError):
 
         self.r = np.asarray([x, y, z])
-        sinphi = np.arcsin(self.r[1]/np.sqrt(self.r[0]**2+self.r[1]**2)) 
-        cosphi = np.arccos(self.r[0]/np.sqrt(self.r[0]**2+self.r[1]**2))
+        sinphi = (self.r[1]/np.sqrt(self.r[0]**2+self.r[1]**2)) 
+        cosphi = (self.r[0]/np.sqrt(self.r[0]**2+self.r[1]**2))
         if cosphi > 1.0:
             cosphi = 1.0
         if cosphi < -1.0:
@@ -22,9 +22,10 @@ class BTLTray:
             self.phi = np.arccos(cosphi)
         else:
             self.phi = -np.arccos(cosphi) + 2.0*np.pi
-        
-        self.n = self.r/np.linalg.norm(self.r)
-      
+        normal = np.asarray([self.r[0], self.r[1], 0.0])
+        self.n = normal/np.linalg.norm(normal)
+        self.trayNumber = n
+        self.side = side
         self.TrayWidth = TrayWidth
         self.TrayLength = TrayLength
         self.RULength = RULength

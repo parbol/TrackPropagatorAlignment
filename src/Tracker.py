@@ -161,22 +161,25 @@ class Tracker:
                         break
                 tbarrel.append(tv)
         
-        tendcapp = []
-        tendcapm = []
-        for i in self.zp:
-            tval = (track.gamma*track.m)/(30.0*track.pz)*(i-track.dz)
-            tendcapp.append(tval)
-        tendcap = tendcapp
-        if tendcapp[0] < 0:
-            for i in self.zm:
+        if track.pz == 0:
+            tendcap = []
+        else:
+            tendcapp = []
+            tendcapm = []
+            for i in self.zp:
                 tval = (track.gamma*track.m)/(30.0*track.pz)*(i-track.dz)
-                tendcapm.append(tval)
-            tendcap = tendcapm
+                tendcapp.append(tval)
+            tendcap = tendcapp
+            if tendcapp[0] < 0:
+                for i in self.zm:
+                    tval = (track.gamma*track.m)/(30.0*track.pz)*(i-track.dz)
+                    tendcapm.append(tval)
+                tendcap = tendcapm
 
         t = []
         det = []
         for tj in tbarrel:
-            if tj > tendcap[0]:
+            if len(tendcap) != 0 and tj > tendcap[0]:
                 break
             x, y, z = track.eval(tj)
             if z < self.centre[2] + self.zsize/2.0 and z > self.centre[2] - self.zsize/2.0:

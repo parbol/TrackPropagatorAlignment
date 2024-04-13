@@ -47,7 +47,7 @@ if __name__ == "__main__":
     TrayStartZ = 1.0
     TrayStartPhi = 5.0*np.pi/180.0
     RULength = 45.0
-    ModuleLength = 5.0
+    ModuleLength = 5.4
     ModuleWidth = 4.0
     rphi_error = 0.1
     z_error = 0.1
@@ -57,33 +57,23 @@ if __name__ == "__main__":
     #etl.draw(ax1, ax2, ax3, 'g')
 
     #An example track 
-    track = Track(0, 0, np.pi/2.0, 0.1, 10, 1.0)
-    tracker.fullMeasurement(track)
-    valid = btl.fullMeasurement(track)
-    print(valid)
-    track.plot_track(ax1, ax2, ax3, 'r')
-    #counter = 0
-    #alist = []
-    #while counter < 10:
-    #    phi = np.random.uniform(0, 2.0*np.pi)
-    #    eta = np.random.uniform(1.6, 3.0)
-    #    pt = np.random.uniform(1.0, 50.0)
-    #    track = Track(0, 0, phi, eta, pt, 1.0)
-    #    tracker.fullMeasurement(track)
-    #    valid = etl.fullMeasurement(track)
-    #    if valid:
-    #        n = len(track.xi)
-    #        xi = track.xi[n-1]
-    #        yi = track.yi[n-1]
-    #        zi = track.zi[n-1]
-    #        ti = track.ti[n-1]
-    #        xin = track.xin[n-1]
-    #        yin = track.yin[n-1]
-    #        zin = track.zin[n-1]
-    #        tin = track.tin[n-1]
-    #        a = [xi, yi, zi, ti, xin, yin, zin, tin]
-    #        print(xi, yi, zi, ti, xin, yin, zin, tin, pt, eta)
-    #        counter = counter + 1
+    #track = Track(0, 0, np.pi/2.0, 0.1, 10, 1.0)
+    #tracker.fullMeasurement(track)
+    #valid = btl.fullMeasurement(track)
+    #track.plot_track(ax1, ax2, ax3, 'r')
+    counter = 0
+    alist = []
+    while counter < 10:
+        phi = np.random.uniform(0, 2.0*np.pi)
+        eta = np.random.uniform(-1.6, 1.6)
+        pt = np.random.uniform(1.0, 2.0)
+        charge = np.sign(np.random.uniform(-1.0, 1.0))
+        track = Track(0, 0, phi, eta, pt, charge)
+        tracker.fullMeasurement(track)
+        valid = btl.fullMeasurement(track)
+        if valid:
+            track.plot_track(ax1, ax2, ax3, 'r')
+            counter = counter + 1
            
     
     plt.show()
