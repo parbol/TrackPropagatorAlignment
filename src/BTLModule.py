@@ -1,30 +1,25 @@
 from src.Plane import Plane
 from src.Module import Module
+from src.BTLId import BTLId
+
 import numpy as np
 import sys
 
 class BTLModule:
     
-    def __init__(self, m, type, n, side, x, y, z, euler, ModuleLength, ModuleWidth, rphiError, zError, tError):
+    def __init__(self, btl, x, y, z, euler, ModuleLength, ModuleWidth):
 
         self.r = np.asarray([x, y, z])
         self.ModuleLength = ModuleLength
         self.ModuleWidth = ModuleWidth 
-        self.rphi_error = rphiError
-        self.z_error = zError
-        self.t_error = tError
-        self.moduleNumber = m
-        self.type = type
-        self.n = n
-        self.side = side
+        self.btlId = btl
         self.eulerAngles = euler
-        
         self.module = Module(self.r, self.eulerAngles, self.ModuleWidth, self.ModuleLength)
     
    
     def intersection(self, x, y, z, track):
-
-        return self.module.intersection(track)
+        valid, x, y, z, t = self.module.intersection(track)
+        return valid, self.btlId, [x, y, z, t]
 
 
     def draw(self, ax1, ax2, ax3, t):

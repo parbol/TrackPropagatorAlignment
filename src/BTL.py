@@ -2,6 +2,7 @@ from src.Plane import Plane
 from src.Module import Module
 from src.BTLTray import BTLTray
 from src.EulerRotation import EulerRotation
+from src.BTLId import BTLId
 import numpy as np
 import sys
 
@@ -78,10 +79,16 @@ class BTL:
         self.pTrays = []
         self.mTrays = []
         for i, t in enumerate(positiveTrays):
-            tray = BTLTray(i+1, 1, t[0], t[1], t[2], eulerAngles[i], self.TrayWidth, self.TrayLength, self.RULength, self.ModuleLength, self.ModuleWidth, self.rphi_error, self.z_error, self.t_error)
+            btl = BTLId()
+            btl.setTray(i+1)
+            btl.setSide(1)
+            tray = BTLTray(btl, t[0], t[1], t[2], eulerAngles[i], self.TrayWidth, self.TrayLength, self.RULength, self.ModuleLength, self.ModuleWidth)
             self.pTrays.append(tray)
         for i, t in enumerate(negativeTrays):
-            tray = BTLTray(i+1, -1, t[0], t[1], t[2], eulerAngles[i], self.TrayWidth, self.TrayLength, self.RULength, self.ModuleLength, self.ModuleWidth, self.rphi_error, self.z_error, self.t_error)
+            btl = BTLId()
+            btl.setTray(i+1)
+            btl.setSide(-1)
+            tray = BTLTray(btl, t[0], t[1], t[2], eulerAngles[i], self.TrayWidth, self.TrayLength, self.RULength, self.ModuleLength, self.ModuleWidth)
             self.mTrays.append(tray)
                 
    
@@ -101,10 +108,13 @@ class BTL:
         phi = track.phi
         eta = track.eta
         trays = []
+        side = 0
         if eta >= 0:
             trays = self.pTrays
+            side = 1
         else:
             trays = self.mTrays
+            side = -1
 
         trayNumber = self.getClosestTray(phi, trays)
         navigationWindow = 2
@@ -115,48 +125,64 @@ class BTL:
                 navigationList.append(-i)
         for i in navigationList:
             checkTrayNumber = (trayNumber + i) % 36
-            valid, x, y, z, t = trays[checkTrayNumber].intersection(track)
+            valid, id, point = trays[checkTrayNumber].intersection(track)
             if valid:
-                return True, [x, y, z, t], [3]
-        return False, [0, 0, 0, 0], [3]
+                return True, id, point, [3]
+        return False, [], [], [3]
 
 
+    def getModule(self, detInfo):
 
+        tray = detInfo.tray
+        side = detInfo.side
+        RU = detInfo.RU
+        module = detInfo.module
+       
+        if side > 0:
+
+            return self.pTrays[tray].RUs[RU].Modules[module].module
+        
+        else:
+
+            return self.mTrays[tray].RUs[RU].Modules[module].module
+        
 
     def fullMeasurement(self, track):
  
         #Intersection
-        status, v, det = self.intersection(track)
+        status, detInfo, v, det = self.intersection(track)
         if not status:
             return False
-        
         x = np.asarray([v[0]])
         y = np.asarray([v[1]])
         z = np.asarray([v[2]])
         t = np.asarray([v[3]])
-      
+
         track.xi = np.concatenate((track.xi, x), axis=0)
         track.yi = np.concatenate((track.yi, y), axis=0)
         track.zi = np.concatenate((track.zi, z), axis=0)
         track.ti = np.concatenate((track.ti, t), axis=0)
         track.det = track.det + det
         
-        #Measurement     
-        phi = np.arctan2(y, x)
-        r = np.sqrt(y**2 + x**2)
-       
-        sigma_rphi = self.rphi_error / r
-        sigma_z = np.zeros(x.shape) + self.z_error
-        var_sigma = np.random.normal(0, sigma_rphi)
-        phi = phi + var_sigma
-        var_z = np.random.normal(0, sigma_z)
-        z = track.zi + var_z
-        x_meas = r * np.cos(phi)
-        y_meas = r * np.sin(phi)
-        z_meas = z 
-        sigma_t = np.zeros(x.shape) + self.t_error
-        var_t = np.random.normal(0, sigma_t)
-        t_meas = t + var_t
+        module = self.getModule(detInfo)
+        
+        globalVector = np.asarray([v[0], v[1], v[2]])
+        localVector = module.toLocal(globalVector)
+        localX = localVector[0]
+        localY = localVector[1]
+        xunc = np.random.normal(0, self.rphi_error)
+        yunc = np.random.normal(0, self.z_error)
+        localX += xunc
+        localY += yunc
+        localVector[0] = localX
+        localVector[1] = localY
+        newGlobalVector = module.toGlobal(localVector)
+        var_t = np.random.normal(0, self.t_error)
+        newt = v[3] + var_t
+        x_meas = np.asarray([newGlobalVector[0]])
+        y_meas = np.asarray([newGlobalVector[1]])
+        z_meas = np.asarray([newGlobalVector[2]])
+        t_meas = np.asarray([newt])
         
         track.xm = np.concatenate((track.xm, x_meas), axis=0)
         track.ym = np.concatenate((track.ym, y_meas), axis=0)
