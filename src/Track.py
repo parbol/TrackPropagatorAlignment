@@ -68,8 +68,13 @@ class Track:
         #Some constants, maybe wise to put them somewhere else
         self.m = 0.1396
         b = 3.8
-        self.gamma = np.sqrt(self.pt**2 + self.pz**2 + self.m**2)/self.m
+        self.E = np.sqrt(self.pt**2 + self.pz**2 + self.m**2)
+        self.p = np.sqrt(self.pt**2 + self.pz**2)
+        self.gamma = self.E/self.m
+        self.beta = self.p/self.E
         self.w = self.q * 0.089880 * b / (self.gamma * self.m)
+        self.betamomentum = self.p * self.beta
+        
 
         #POCA points
         self.x_cp = dxy * np.cos(phi + np.pi/2.0)

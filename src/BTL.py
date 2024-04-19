@@ -8,7 +8,7 @@ import sys
 
 class BTL:
     
-    def __init__(self, R, TrayLength, TrayWidth, TrayStartZ, TrayStartPhi, RULength, ModuleLength, ModuleWidth, rphiError, zError, tError):
+    def __init__(self, R, TrayLength, TrayWidth, TrayStartZ, TrayStartPhi, RULength, ModuleLength, ModuleWidth, rphiError, zError, tError, X0):
 
         ####################################################################################################
         #                                   Representation of a BTL disk                                   #
@@ -23,6 +23,7 @@ class BTL:
         # rphi_error: uncertainty in rphi
         # z_error: undertainty in z
         # t_error: time uncertainty
+        # x0: Mean radiation length
         #####################################################################################################
         self.R = R
         self.TrayLength = TrayLength
@@ -35,6 +36,8 @@ class BTL:
         self.rphi_error = rphiError
         self.z_error = zError
         self.t_error = tError
+        self.X0 = X0
+        self.scattbase = (0.0136*0.0136) / X0
         self.zOfPositiveTrays = self.TrayStartZ + self.TrayLength/2.0
         self.zOfNegativeTrays = -self.zOfPositiveTrays
         self.anglePerTray = 2.0 * np.arcsin((self.TrayWidth/2.0) / self.R)
@@ -147,6 +150,16 @@ class BTL:
             return self.mTrays[tray].RUs[RU].Modules[module].module
         
 
+    def getScatteringMagnitude(self, dl, betamomentum):
+
+        # This method calculates the real scattering suffered by
+        # the muon when traversing distance dl of the voxel. It
+        # returns the angular deviation and spatial displacement.     
+        cov = self.scattbase/(betamomentum)**2 * np.matrix([[dl, dl*dl/2.0], [dl*dl/2.0, dl*dl*dl/3.0]])
+        angle, disp = np.random.multivariate_normal([0,0], cov, 1)[0].T
+        return angle, disp
+
+    
     def fullMeasurement(self, track):
  
         #Intersection
@@ -170,20 +183,31 @@ class BTL:
         localVector = module.toLocal(globalVector)
         localX = localVector[0]
         localY = localVector[1]
+        #Spatial uncertainty
         xunc = np.random.normal(0, self.rphi_error)
         yunc = np.random.normal(0, self.z_error)
-        localX += xunc
-        localY += yunc
+        #Multiple scattering
+        dl = np.linalg.norm(globalVector)
+        betamomentum = track.betamomentum
+        xangle, xdisp = self.getScatteringMagnitude(dl, betamomentum)
+        yangle, ydisp = self.getScatteringMagnitude(dl, betamomentum)
+        localX += (xunc + xdisp)
+        localY += (yunc + ydisp)
         localVector[0] = localX
         localVector[1] = localY
         newGlobalVector = module.toGlobal(localVector)
+        
+        #Time uncertainty
         var_t = np.random.normal(0, self.t_error)
         newt = v[3] + var_t
+
+
         x_meas = np.asarray([newGlobalVector[0]])
         y_meas = np.asarray([newGlobalVector[1]])
         z_meas = np.asarray([newGlobalVector[2]])
         t_meas = np.asarray([newt])
         
+
         track.xm = np.concatenate((track.xm, x_meas), axis=0)
         track.ym = np.concatenate((track.ym, y_meas), axis=0)
         track.zm = np.concatenate((track.zm, z_meas), axis=0)
