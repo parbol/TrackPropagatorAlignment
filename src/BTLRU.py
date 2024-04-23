@@ -28,7 +28,7 @@ class BTLRU:
             self.zFirstModule = -1.0 * self.zFirstModule
         
         self.Modules = []
-        counter = 1
+        counter = 0
         for i in range(-1, 2):
             for j in range(0, 8):
                 xpos = self.r[0] + i * (self.ModuleWidth + self.interspaceY) * self.vn[0]                                

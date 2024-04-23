@@ -13,18 +13,18 @@ class BTLId:
         self.module = -1
 
     def setTray(self, tray):
-        self.tray = tray-1
+        self.tray = tray
     
     def setSide(self, side):
         self.side = side
 
     def setRU(self, type, number):
-        self.RUType = type - 1
-        self.RUNumber = number - 1
+        self.RUType = type
+        self.RUNumber = number
         self.RU = self.RUType * 2 + self.RUNumber
 
     def setModule(self, module):
-        self.module = module - 1
+        self.module = module
 
         
         

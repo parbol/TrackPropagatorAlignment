@@ -31,7 +31,6 @@ class Module:
         self.pUR = self.toGlobal(self.pURlocal)
 
 
-
     def toGlobal(self, v):
 
         return self.x + self.eulerAngles.apply(v)

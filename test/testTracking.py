@@ -53,6 +53,7 @@ if __name__ == "__main__":
     z_error = 0.1
     t_error = 0.1
     btl = BTL(R, TrayLength, TrayWidth, TrayStartZ, TrayStartPhi, RULength, ModuleLength, ModuleWidth, rphi_error, z_error, t_error, 9.4)
+    btl.writeGeometry('caca.txt')
     btl.draw(ax1, ax2, ax3, 'g')
     #etl.draw(ax1, ax2, ax3, 'g')
 
@@ -71,6 +72,7 @@ if __name__ == "__main__":
         track = Track(0, 0, phi, eta, pt, charge)
         tracker.fullMeasurement(track)
         valid = btl.fullMeasurement(track)
+        print(valid)
         if valid:
             track.plot_track(ax1, ax2, ax3, 'r')
             counter = counter + 1

@@ -83,13 +83,13 @@ class BTL:
         self.mTrays = []
         for i, t in enumerate(positiveTrays):
             btl = BTLId()
-            btl.setTray(i+1)
+            btl.setTray(i)
             btl.setSide(1)
             tray = BTLTray(btl, t[0], t[1], t[2], eulerAngles[i], self.TrayWidth, self.TrayLength, self.RULength, self.ModuleLength, self.ModuleWidth)
             self.pTrays.append(tray)
         for i, t in enumerate(negativeTrays):
             btl = BTLId()
-            btl.setTray(i+1)
+            btl.setTray(i)
             btl.setSide(-1)
             tray = BTLTray(btl, t[0], t[1], t[2], eulerAngles[i], self.TrayWidth, self.TrayLength, self.RULength, self.ModuleLength, self.ModuleWidth)
             self.mTrays.append(tray)
@@ -149,6 +149,19 @@ class BTL:
 
             return self.mTrays[tray].RUs[RU].Modules[module].module
         
+    def writeGeometry(self, fileName):
+
+        f = open(fileName, 'w')
+        for tray in self.pTrays:
+            for ru in tray.RUs:
+                for module in ru.Modules:
+                    module.write(f)
+        for tray in self.mTrays:
+            for ru in tray.RUs:
+                for module in ru.Modules:
+                    module.write(f)
+        f.close()
+
 
     def getScatteringMagnitude(self, dl, betamomentum):
 
@@ -171,6 +184,11 @@ class BTL:
         z = np.asarray([v[2]])
         t = np.asarray([v[3]])
 
+        xTracker = track.xi[len(track.xi)-1]
+        yTracker = track.yi[len(track.yi)-1]
+        zTracker = track.zi[len(track.zi)-1]
+        vectorTracker = np.asarray([xTracker, yTracker, zTracker])
+
         track.xi = np.concatenate((track.xi, x), axis=0)
         track.yi = np.concatenate((track.yi, y), axis=0)
         track.zi = np.concatenate((track.zi, z), axis=0)
@@ -187,7 +205,8 @@ class BTL:
         xunc = np.random.normal(0, self.rphi_error)
         yunc = np.random.normal(0, self.z_error)
         #Multiple scattering
-        dl = np.linalg.norm(globalVector)
+        
+        dl = np.linalg.norm(globalVector-vectorTracker)
         betamomentum = track.betamomentum
         xangle, xdisp = self.getScatteringMagnitude(dl, betamomentum)
         yangle, ydisp = self.getScatteringMagnitude(dl, betamomentum)
