@@ -72,7 +72,6 @@ if __name__ == "__main__":
         track = Track(0, 0, phi, eta, pt, charge)
         tracker.fullMeasurement(track)
         valid = btl.fullMeasurement(track)
-        print(valid)
         if valid:
             track.plot_track(ax1, ax2, ax3, 'r')
             counter = counter + 1

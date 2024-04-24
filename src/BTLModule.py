@@ -19,13 +19,20 @@ class BTLModule:
    
     def write(self, f):
 
-        cad = '{side} {tray} {RUType} {RUNumber} {module}'.format(side = str(self.btlId.side),
+        cad = '{side} {tray} {RUType} {RUNumber} {module} {x} {y} {z} {psi} {theta} {phi}'.format(side = str(self.btlId.side),
                                                                   tray = str(self.btlId.tray),
                                                                   RUType = str(self.btlId.RUType),
                                                                   RUNumber = str(self.btlId.RUNumber),
-                                                                  module = str(self.btlId.module))
+                                                                  module = str(self.btlId.module),
+                                                                  x = str(self.r[0]),
+                                                                  y = str(self.r[1]),
+                                                                  z = str(self.r[2]),
+                                                                  psi = str(self.eulerAngles.psi),
+                                                                  theta = str(self.eulerAngles.theta),
+                                                                  phi = str(self.eulerAngles.phi))
         f.write(cad + '\n')  
 
+    
     def intersection(self, x, y, z, track):
         valid, x, y, z, t = self.module.intersection(track)
         return valid, self.btlId, [x, y, z, t] 
