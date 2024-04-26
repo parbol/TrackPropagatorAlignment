@@ -16,6 +16,11 @@ class BTLModule:
         self.eulerAngles = euler
         self.module = Module(self.r, self.eulerAngles, self.ModuleWidth, self.ModuleLength)
     
+    def updatePosition(self, r, eulerAngles):
+
+        self.r = r
+        self.eulerAngles = eulerAngles
+        self.module.updatePosition(r, eulerAngles)
    
     def write(self, f):
 

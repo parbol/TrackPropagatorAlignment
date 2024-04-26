@@ -134,6 +134,22 @@ class BTL:
         return False, [], [], [3]
 
 
+    def getBTLModule(self, detInfo):
+        
+        tray = detInfo.tray
+        side = detInfo.side
+        RU = detInfo.RU
+        module = detInfo.module
+       
+        if side > 0:
+
+            return self.pTrays[tray].RUs[RU].Modules[module]
+        
+        else:
+
+            return self.mTrays[tray].RUs[RU].Modules[module]
+
+
     def getModule(self, detInfo):
 
         tray = detInfo.tray
@@ -148,7 +164,8 @@ class BTL:
         else:
 
             return self.mTrays[tray].RUs[RU].Modules[module].module
-        
+
+
     def writeGeometry(self, fileName):
 
         f = open(fileName, 'w')
@@ -161,6 +178,36 @@ class BTL:
                 for module in ru.Modules:
                     module.write(f)
         f.close()
+
+
+    def readGeometry(self, fileName):
+
+        f = open(fileName)
+        for i in f.readlines():
+            line = i.split()
+            side = int(line[0])
+            tray = int(line[1])
+            RUType = int(line[2])
+            RUNumber = int(line[3])
+            module = int(line[4])
+            btl = BTLId()
+            btl.setSide(side)
+            btl.setTray(tray)
+            btl.setRU(RUType, RUNumber)
+            btl.setModule(module)
+            btl.print()
+            mod = self.getBTLModule(btl)
+            x = float(line[5])
+            y = float(line[6])
+            z = float(line[7])
+            psi = float(line[8])
+            theta = float(line[9])
+            phi = float(line[10])
+            r = np.asarray([x, y, z])
+            euler = EulerRotation(psi, theta, phi)
+            mod.updatePosition(r, euler)
+        f.close()
+
 
 
     def getScatteringMagnitude(self, dl, betamomentum):

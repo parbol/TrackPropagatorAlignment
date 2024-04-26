@@ -31,6 +31,15 @@ class Module:
         self.pUR = self.toGlobal(self.pURlocal)
 
 
+    def updatePosition(self, r, eulerAngles):
+        
+        self.x = r
+        self.eulerAngles = eulerAngles
+        z = np.asarray([0.0, 0.0, 1.0])
+        n = self.eulerAngles.apply(z)
+        self.plane.updatePosition(self.x[0], self.x[1], self.x[2], n[0], n[1], n[2])
+
+
     def toGlobal(self, v):
 
         return self.x + self.eulerAngles.apply(v)

@@ -40,7 +40,7 @@ class BTLTray:
         self.RUs = []
         for rutype in range(0, 3):
             for runumber in range(0,2):
-                pos = (rutype)*2 + (runumber)
+                pos = rutype*2 + runumber
                 btl = BTLId()
                 btl.setTray(self.btlId.tray)
                 btl.setSide(self.btlId.side)

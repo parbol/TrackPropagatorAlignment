@@ -26,7 +26,15 @@ class BTLId:
     def setModule(self, module):
         self.module = module
 
-        
+    def print(self):
+
+        print('BTL Id:---------------')
+        print('Side:', self.side)
+        print('Tray:', self.tray)
+        print('RUType:', self.RUType)
+        print('RUNumber:', self.RUNumber)
+        print('RU:', self.RU)
+        print('Module:', self.module)
         
 
 

@@ -37,7 +37,7 @@ class BTLRU:
                 btl = BTLId()
                 btl.setTray(self.btlId.tray)
                 btl.setSide(self.btlId.side)
-                btl.setRU(self.btlId.RUType+1, self.btlId.RUNumber+1)
+                btl.setRU(self.btlId.RUType, self.btlId.RUNumber)
                 btl.setModule(counter)
                 mbtl = BTLModule(btl, xpos, ypos, zpos, self.eulerAngles, self.ModuleLength, self.ModuleWidth)
                 self.Modules.append(mbtl)

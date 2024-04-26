@@ -54,6 +54,7 @@ if __name__ == "__main__":
     t_error = 0.1
     btl = BTL(R, TrayLength, TrayWidth, TrayStartZ, TrayStartPhi, RULength, ModuleLength, ModuleWidth, rphi_error, z_error, t_error, 9.4)
     btl.writeGeometry('caca.txt')
+    btl.readGeometry('caca.txt')
     btl.draw(ax1, ax2, ax3, 'g')
     #etl.draw(ax1, ax2, ax3, 'g')
 
