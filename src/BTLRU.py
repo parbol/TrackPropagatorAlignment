@@ -55,14 +55,14 @@ class BTLRU:
         return False, [], []
     
 
-    def draw(self, ax1, ax2, ax3, t):
+    def draw(self, ax1, ax2, ax3, ax4, t):
 
         #self.Modules[0].draw(ax1, ax2, ax3, t)
         #self.Modules[1].draw(ax1, ax2, ax3, t)
         #self.Modules[2].draw(ax1, ax2, ax3, t)
 
         for m in self.Modules:
-            m.draw(ax1, ax2, ax3, t)
+            m.draw(ax1, ax2, ax3, ax4, t)
 
              
 

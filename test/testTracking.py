@@ -20,21 +20,34 @@ from src.BTL import BTL
 if __name__ == "__main__":
 
     #Some global variables
-    fig = plt.figure(figsize = plt.figaspect(0.3))
-    ax1 = fig.add_subplot(1, 3, 2, projection = '3d')
-    ax2 = fig.add_subplot(1, 3, 1)
-    ax3 = fig.add_subplot(1, 3, 3)
+    #fig = plt.figure(figsize = plt.figaspect(0.3))
+    fig = plt.figure(figsize = (8, 8), layout="constrained")
+    gs0 = fig.add_gridspec(2, 1, height_ratios=[2,1])
+    ax1 = fig.add_subplot(gs0[0], projection = '3d')
+    gs1 = gs0[1].subgridspec(1,3)
+    ax2 = fig.add_subplot(gs1[0])
+    ax3 = fig.add_subplot(gs1[1])
+    ax4 = fig.add_subplot(gs1[2])
     ax1.xaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
     ax1.yaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
     ax1.zaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
-    
+    ax1.set_xlabel('x [cm]')
+    ax1.set_ylabel('y [cm]')
+    ax1.set_zlabel('z [cm]')
+    ax2.set_xlabel('x [cm]')
+    ax2.set_ylabel('y [cm]')
+    ax3.set_xlabel('z [cm]')
+    ax3.set_ylabel('y [cm]')
+    ax4.set_xlabel('z [cm]')
+    ax4.set_ylabel('x [cm]')
+
     #configuring the tracker
     layers = np.linspace(1, 100, 20)
     layersz = np.linspace(130, 270, 5)
     sigma_rphi = 0.01
     sigma_z = 0.01
     tracker = Tracker(layers, layersz, sigma_rphi, sigma_z, 220.0, [0,0,0])
-    tracker.plot_tracker(ax1, ax2, ax3)
+    tracker.plot_tracker(ax1, ax2, ax3, ax4)
     
     #Configuring the ETL 
     #etl = ETL(350.0, 4.0, 4.0, 30, 50, 4.0, 1.0, 2.0, 2.0, 30.0, 127.0, 0.1, 0.001, 0.3)
@@ -55,14 +68,14 @@ if __name__ == "__main__":
     btl = BTL(R, TrayLength, TrayWidth, TrayStartZ, TrayStartPhi, RULength, ModuleLength, ModuleWidth, rphi_error, z_error, t_error, 9.4)
     btl.writeGeometry('caca.txt')
     btl.readGeometry('caca.txt')
-    btl.draw(ax1, ax2, ax3, 'g')
+    btl.draw(ax1, ax2, ax3, ax4, 'g')
     #etl.draw(ax1, ax2, ax3, 'g')
 
     #An example track 
     #track = Track(0, 0, np.pi/2.0, 0.1, 10, 1.0)
     #tracker.fullMeasurement(track)
     #valid = btl.fullMeasurement(track)
-    #track.plot_track(ax1, ax2, ax3, 'r')
+    #track.plot_track(ax1, ax2, ax3, ax4, 'r')
     counter = 0
     alist = []
     while counter < 10:
@@ -74,7 +87,7 @@ if __name__ == "__main__":
         tracker.fullMeasurement(track)
         valid = btl.fullMeasurement(track)
         if valid:
-            track.plot_track(ax1, ax2, ax3, 'r')
+            track.plot_track(ax1, ax2, ax3, ax4, 'r')
             counter = counter + 1
            
     

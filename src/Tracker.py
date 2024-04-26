@@ -27,7 +27,7 @@ class Tracker:
         self.zsize = zsize      
   
 
-    def plot_tracker(self, ax1, ax2, ax3, fmtb = 'b--', fmte = 'r--'):
+    def plot_tracker(self, ax1, ax2, ax3, ax4, fmtb = 'b--', fmte = 'r--'):
         
         theta = np.linspace(0, 2 * np.pi, 20)
         zpace = np.linspace(-self.zsize / 2.0, self.zsize / 2.0, 10)
@@ -72,6 +72,16 @@ class Tracker:
                 yt2.append(-i) 
             ax3.plot(zt, yt, fmtb, zt, yt2, fmtb)
 
+        for i in self.ri:
+            zt = []
+            xt = []
+            xt2 = []
+            for zpa in zpace:
+                zt.append(zpa)
+                xt.append(i)
+                xt2.append(-i) 
+            ax4.plot(zt, xt, fmtb, zt, xt2, fmtb)
+
         for zpa in self.z:
             x = []
             yt = []
@@ -82,7 +92,16 @@ class Tracker:
                 yt2.append(-i)
                 ax3.plot(x, yt, fmte, x, yt2, fmte)   
 
-  
+        for zpa in self.z:
+            x = []
+            yt = []
+            yt2 = []
+            for i in self.ri:  
+                x.append(zpa)
+                yt.append(i)
+                yt2.append(-i)
+                ax4.plot(x, yt, fmte, x, yt2, fmte)   
+
     def convertAngle(self, theta):
         if theta > np.pi:
             return theta - np.pi * 2.0

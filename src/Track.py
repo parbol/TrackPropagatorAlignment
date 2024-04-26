@@ -109,24 +109,24 @@ class Track:
         return x, y, z
 
 
-    def plot_points(self, x, y, z, ax1, ax2, ax3, fmt):
+    def plot_points(self, x, y, z, ax1, ax2, ax3, ax4, fmt):
 
         ax2.plot(x, y, fmt)
         ax1.plot3D(x, z, y, fmt)
         ax3.plot(z, y, fmt)
 
 
-    def plot_intersections(self, ax1, ax2, ax3, fmt):
+    def plot_intersections(self, ax1, ax2, ax3, ax4, fmt):
 
-        self.plot_points(self.xi, self.yi, self.zi, ax1, ax2, ax3, fmt)
-
-
-    def plot_measurements(self, axi1, ax2, ax3, fmt):
-
-        self.plot_points(self.xm, self.ym, self.zm, ax1, ax2, ax3, fmt)
+        self.plot_points(self.xi, self.yi, self.zi, ax1, ax2, ax3, ax4, fmt)
 
 
-    def plot_track(self, ax1, ax2, ax3, fmt = 'g'):
+    def plot_measurements(self, ax1, ax2, ax3, ax4, fmt):
+
+        self.plot_points(self.xm, self.ym, self.zm, ax1, ax2, ax3, ax4, fmt)
+
+
+    def plot_track(self, ax1, ax2, ax3, ax4, fmt = 'g'):
               
         #We have all the ingredients, we just need to propagate the track for a given time
         t = np.linspace(0, self.ti[-1], 200)
@@ -135,6 +135,7 @@ class Track:
         ax2.plot(x, y, fmt, label = 'Real track')
         ax2.plot(0, 0, 'rx')
         ax3.plot(z, y, fmt)
+        ax4.plot(z, x, fmt)
             
     def print(self):
         print('----Track info-----')
