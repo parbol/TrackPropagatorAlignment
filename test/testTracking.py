@@ -65,10 +65,11 @@ if __name__ == "__main__":
     rphi_error = 0.1
     z_error = 0.1
     t_error = 0.1
-    btl = BTL(R, TrayLength, TrayWidth, TrayStartZ, TrayStartPhi, RULength, ModuleLength, ModuleWidth, rphi_error, z_error, t_error, 9.4)
-    btl.writeGeometry('caca.txt')
-    btl.readGeometry('caca.txt')
-    btl.draw(ax1, ax2, ax3, ax4, 'g')
+    btlAligned = BTL(R, TrayLength, TrayWidth, TrayStartZ, TrayStartPhi, RULength, ModuleLength, ModuleWidth, rphi_error, z_error, t_error, 9.4)
+    btlMisaligned = BTL(R, TrayLength, TrayWidth, TrayStartZ, TrayStartPhi, RULength, ModuleLength, ModuleWidth, rphi_error, z_error, t_error, 9.4)
+    btlMisaligned.readGeometry('btlUpdatedGeometry.txt')
+    
+    #btlMisaligned.draw(ax1, ax2, ax3, ax4, 'g')
     #etl.draw(ax1, ax2, ax3, 'g')
 
     #An example track 
@@ -81,17 +82,18 @@ if __name__ == "__main__":
     while counter < 10:
         phi = np.random.uniform(0, 2.0*np.pi)
         eta = np.random.uniform(-1.6, 1.6)
-        pt = np.random.uniform(1.0, 2.0)
+        pt = np.random.uniform(1.0, 20.0)
         charge = np.sign(np.random.uniform(-1.0, 1.0))
         track = Track(0, 0, phi, eta, pt, charge)
         tracker.fullMeasurement(track)
-        valid = btl.fullMeasurement(track)
-        if valid:
-            track.plot_track(ax1, ax2, ax3, ax4, 'r')
+        validAligned = btlAligned.fullMeasurement(track)
+        validMisaligned = btlMisaligned.fullMeasurement(track)
+        if validAligned and validMisaligned:
+            #track.plot_track(ax1, ax2, ax3, ax4, 'r')
             counter = counter + 1
            
     
-    plt.show()
+    #plt.show()
 
 
 
