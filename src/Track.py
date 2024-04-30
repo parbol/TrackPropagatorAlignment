@@ -88,6 +88,7 @@ class Track:
         
         #List of intersections and measurements
         self.det = []
+        self.subdet = []
         self.xi = np.asarray([])
         self.yi = np.asarray([])
         self.zi = np.asarray([])
@@ -96,6 +97,12 @@ class Track:
         self.ym = np.asarray([])
         self.zm = np.asarray([])
         self.tm = np.asarray([])
+        self.lxi = np.asarray([])
+        self.lyi = np.asarray([])
+        self.lzi = np.asarray([])
+        self.lxm = np.asarray([])
+        self.lym = np.asarray([])
+        self.lzm = np.asarray([])
         self.lastT = 0
 
     

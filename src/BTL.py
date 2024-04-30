@@ -195,7 +195,6 @@ class BTL:
             btl.setTray(tray)
             btl.setRU(RUType, RUNumber)
             btl.setModule(module)
-            btl.print()
             mod = self.getBTLModule(btl)
             x = float(line[5])
             y = float(line[6])
@@ -243,16 +242,23 @@ class BTL:
         track.det = track.det + det
         
         module = self.getModule(detInfo)
-        
+        detInfoList = [detInfo.side, detInfo.tray, detInfo.RUType, detInfo.RUNumber, detInfo.module]
+        track.subdet = track.subdet + [detInfoList]
         globalVector = np.asarray([v[0], v[1], v[2]])
         localVector = module.toLocal(globalVector)
+        lx = np.asarray([localVector[0]])
+        ly = np.asarray([localVector[1]])
+        lz = np.asarray([localVector[2]])
+        track.lxi = np.concatenate((track.lxi, lx), axis=0)
+        track.lyi = np.concatenate((track.lyi, ly), axis=0)
+        track.lzi = np.concatenate((track.lzi, lz), axis=0)
         localX = localVector[0]
         localY = localVector[1]
+
         #Spatial uncertainty
         xunc = np.random.normal(0, self.rphi_error)
         yunc = np.random.normal(0, self.z_error)
         #Multiple scattering
-        
         dl = np.linalg.norm(globalVector-vectorTracker)
         betamomentum = track.betamomentum
         xangle, xdisp = self.getScatteringMagnitude(dl, betamomentum)
@@ -271,6 +277,9 @@ class BTL:
         x_meas = np.asarray([newGlobalVector[0]])
         y_meas = np.asarray([newGlobalVector[1]])
         z_meas = np.asarray([newGlobalVector[2]])
+        lx_meas = np.asarray([localVector[0]])
+        ly_meas = np.asarray([localVector[1]])
+        lz_meas = np.asarray([localVector[2]])
         t_meas = np.asarray([newt])
         
 
@@ -278,7 +287,10 @@ class BTL:
         track.ym = np.concatenate((track.ym, y_meas), axis=0)
         track.zm = np.concatenate((track.zm, z_meas), axis=0)
         track.tm = np.concatenate((track.tm, t_meas), axis=0)
-       
+        track.lxm = np.concatenate((track.lxm, lx_meas), axis=0)
+        track.lym = np.concatenate((track.lym, ly_meas), axis=0)
+        track.lzm = np.concatenate((track.lzm, lz_meas), axis=0)
+        
         return True
       
 
