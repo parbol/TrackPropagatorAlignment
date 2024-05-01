@@ -62,10 +62,10 @@ class BTLTray:
 
 
 
-    def draw(self, ax1, ax2, ax3, ax4, t):
+    def draw(self, ax1, ax2, ax3, ax4, t, alpha=0.2):
         
         for m in self.RUs:
-            m.draw(ax1, ax2, ax3, ax4, t)
+            m.draw(ax1, ax2, ax3, ax4, t, alpha)
 
              
 

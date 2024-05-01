@@ -118,9 +118,10 @@ class Track:
 
     def plot_points(self, x, y, z, ax1, ax2, ax3, ax4, fmt):
 
-        ax2.plot(x, y, fmt)
-        ax1.plot3D(x, z, y, fmt)
-        ax3.plot(z, y, fmt)
+        ax2.plot(x, y, fmt, markersize=2)
+        ax1.plot3D(x, z, y, fmt, markersize=2)
+        ax3.plot(z, y, fmt, markersize=2)
+        ax4.plot(z, x, fmt, markersize=2)
 
 
     def plot_intersections(self, ax1, ax2, ax3, ax4, fmt):
@@ -140,7 +141,7 @@ class Track:
         x, y, z = self.eval(t)
         ax1.plot3D(x, z, y, fmt)
         ax2.plot(x, y, fmt, label = 'Real track')
-        ax2.plot(0, 0, 'rx')
+        #ax2.plot(0, 0, 'rx')
         ax3.plot(z, y, fmt)
         ax4.plot(z, x, fmt)
             

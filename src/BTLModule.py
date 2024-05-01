@@ -43,7 +43,7 @@ class BTLModule:
         return valid, self.btlId, [x, y, z, t] 
 
 
-    def draw(self, ax1, ax2, ax3, ax4, t):
+    def draw(self, ax1, ax2, ax3, ax4, t, alpha=0.2):
 
         self.module.drawModule(ax1, ax2, ax3, ax4, t)
 

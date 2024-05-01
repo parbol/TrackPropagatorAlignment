@@ -60,7 +60,7 @@ class Tracker:
             for th in theta:
                 xt.append(i * np.cos(th))
                 yt.append(i * np.sin(th))
-            ax2.plot(xt, yt, fmtb)
+            ax2.plot(xt, yt, fmtb, alpha=0.2)
         
         for i in self.ri:
             zt = []
@@ -70,7 +70,7 @@ class Tracker:
                 zt.append(zpa)
                 yt.append(i)
                 yt2.append(-i) 
-            ax3.plot(zt, yt, fmtb, zt, yt2, fmtb)
+            ax3.plot(zt, yt, fmtb, zt, yt2, fmtb, alpha=0.2)
 
         for i in self.ri:
             zt = []
@@ -80,7 +80,7 @@ class Tracker:
                 zt.append(zpa)
                 xt.append(i)
                 xt2.append(-i) 
-            ax4.plot(zt, xt, fmtb, zt, xt2, fmtb)
+            ax4.plot(zt, xt, fmtb, zt, xt2, fmtb, alpha=0.2)
 
         for zpa in self.z:
             x = []
@@ -90,7 +90,7 @@ class Tracker:
                 x.append(zpa)
                 yt.append(i)
                 yt2.append(-i)
-                ax3.plot(x, yt, fmte, x, yt2, fmte)   
+                ax3.plot(x, yt, fmte, x, yt2, fmte, alpha=0.2)   
 
         for zpa in self.z:
             x = []
@@ -100,7 +100,7 @@ class Tracker:
                 x.append(zpa)
                 yt.append(i)
                 yt2.append(-i)
-                ax4.plot(x, yt, fmte, x, yt2, fmte)   
+                ax4.plot(x, yt, fmte, x, yt2, fmte, alpha=0.2)   
 
     def convertAngle(self, theta):
         if theta > np.pi:
