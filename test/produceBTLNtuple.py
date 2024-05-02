@@ -73,7 +73,9 @@ if __name__ == "__main__":
     xmmis = array('f', [0])
     ymmis = array('f', [0])
     zmmis = array('f', [0])
-    
+    xgmnom = array('f', [0])
+    ygmnom = array('f', [0])
+    zgmnom = array('f', [0])
     tree = r.TTree("hits", "hits")
     tree.Branch('pt', pt, 'pt/F')
     tree.Branch('phi', phi, 'phi/F')
@@ -102,7 +104,9 @@ if __name__ == "__main__":
     tree.Branch('xmmis', xmmis, 'xmmis/F')
     tree.Branch('ymmis', ymmis, 'ymmis/F')
     tree.Branch('zmmis', zmmis, 'zmmis/F')
-
+    tree.Branch('xgmnom', xgmnom, 'xgmnom/F')
+    tree.Branch('ygmnom', ygmnom, 'ygmnom/F')
+    tree.Branch('zgmnom', zgmnom, 'zgmnom/F')
     counter = 0
     alist = []
     while counter < int(opts.nTracks):
@@ -132,6 +136,9 @@ if __name__ == "__main__":
             xmnom[0] = track.lxm[len(track.lxm)-1]
             ymnom[0] = track.lym[len(track.lym)-1]
             zmnom[0] = track.lzm[len(track.lzm)-1]
+            xgmnom[0] = track.xm[len(track.xm)-1]
+            ygmnom[0] = track.ym[len(track.ym)-1]
+            zgmnom[0] = track.zm[len(track.zm)-1]   
             sidenom[0] = (track.subdet[len(track.subdet)-1])[0]
             traynom[0] = track.subdet[len(track.subdet)-1][1]
             RUTypenom[0] = track.subdet[len(track.subdet)-1][2]
@@ -145,12 +152,12 @@ if __name__ == "__main__":
             zemis[0] = track2.lzi[len(track.lzi)-1]
             xmmis[0] = track2.lxm[len(track.lxm)-1]
             ymmis[0] = track2.lym[len(track.lym)-1]
-            zmmis[0] = track2.lzm[len(track.lzm)-1]  
-            sidemis[0] = track.subdet[len(track.subdet)-1][0]
-            traymis[0] = track.subdet[len(track.subdet)-1][1]
-            RUTypemis[0] = track.subdet[len(track.subdet)-1][2]
-            RUNumbermis[0] = track.subdet[len(track.subdet)-1][3]
-            modulemis[0] = track.subdet[len(track.subdet)-1][4]
+            zmmis[0] = track2.lzm[len(track.lzm)-1]
+            sidemis[0] = track2.subdet[len(track2.subdet)-1][0]
+            traymis[0] = track2.subdet[len(track2.subdet)-1][1]
+            RUTypemis[0] = track2.subdet[len(track2.subdet)-1][2]
+            RUNumbermis[0] = track2.subdet[len(track2.subdet)-1][3]
+            modulemis[0] = track2.subdet[len(track2.subdet)-1][4]
 
         if validAligned and validMisaligned:
             type[0] = 3 
