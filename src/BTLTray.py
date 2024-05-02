@@ -52,6 +52,13 @@ class BTLTray:
     def intersection(self, track):
         
         valid, x, y, z, t = self.plane.intersection(track)
+        x2 = track.pt * np.cos(track.phi)
+        y2 = track.pt * np.sin(track.phi)
+        z2 = track.pz
+        #print("Momentum", x2, y2, z2)
+        #print(track.pt * np.cos(track.phi), track.pt*np.sin(track.phi), track.pz)
+        #print(self.plane.p, self.plane.n)
+        #print(x, y, z, t, valid)
         for m in self.RUs:
             d = np.abs(z - m.r[2])
             if d <= m.RULength/2.0:

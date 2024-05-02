@@ -76,7 +76,7 @@ class Plane:
         #ftmin = fmin(t_min)
 
         t_min = 0.0
-        t_max = 6.0
+        t_max = 14.0
         if fmin(t_min) * fmin(t_max) > 0:
             return False, -1.0, -1.0, -1.0, -1.0
         s = optimize.brentq(fmin, t_min, t_max, full_output=True, disp=True)

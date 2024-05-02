@@ -186,22 +186,23 @@ class Tracker:
             tendcapp = []
             tendcapm = []
             for i in self.zp:
-                tval = (track.gamma*track.m)/(30.0*track.pz)*(i-track.dz)
+                tval = (track.gamma*track.m)/(29.98*track.pz)*(i-track.dz)
                 tendcapp.append(tval)
             tendcap = tendcapp
             if tendcapp[0] < 0:
                 for i in self.zm:
-                    tval = (track.gamma*track.m)/(30.0*track.pz)*(i-track.dz)
+                    tval = (track.gamma*track.m)/(29.98*track.pz)*(i-track.dz)
                     tendcapm.append(tval)
                 tendcap = tendcapm
 
         t = []
         det = []
+       
         for tj in tbarrel:
             if len(tendcap) != 0 and tj > tendcap[0]:
                 break
             x, y, z = track.eval(tj)
-            if z < self.centre[2] + self.zsize/2.0 and z > self.centre[2] - self.zsize/2.0:
+            if z < self.centre[2] + self.zsize and z > self.centre[2] - self.zsize:
                 t.append(tj)
                 det.append(0)
         for tj in tendcap:
@@ -209,7 +210,6 @@ class Tracker:
             if np.sqrt(x**2+y**2) < self.ri[-1]:
                 t.append(tj)
                 det.append(1)
-
         x, y, z = track.eval(np.array(t))    
         #track.lastT = t[-1]
         return x, y, z, t, det

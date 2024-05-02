@@ -140,6 +140,7 @@ class BTL:
         side = detInfo.side
         RU = detInfo.RU
         module = detInfo.module
+
        
         if side > 0:
 

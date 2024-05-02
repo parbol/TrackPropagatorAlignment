@@ -79,8 +79,8 @@ if __name__ == "__main__":
     alist = []
     while counter < 10:
         phi = np.random.uniform(0, 2.0*np.pi)
-        eta = np.random.uniform(-1.6, 1.6)
-        pt = np.random.uniform(1.0, 20.0)
+        eta = np.random.uniform(1.4, 1.6)
+        pt = np.random.uniform(50.0, 100.0)
         charge = np.sign(np.random.uniform(-1.0, 1.0))
         track = Track(0, 0, phi, eta, pt, charge)
         tracker.fullMeasurement(track)
@@ -89,6 +89,7 @@ if __name__ == "__main__":
             #track.plot_track(ax1, ax2, ax3, ax4, 'r')
             track.plot_measurements(ax1, ax2, ax3, ax4, 'y*')
             counter = counter + 1
+                  
            
     
     plt.show()

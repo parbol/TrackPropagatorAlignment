@@ -79,6 +79,7 @@ if __name__ == "__main__":
     tree = r.TTree("hits", "hits")
     tree.Branch('pt', pt, 'pt/F')
     tree.Branch('phi', phi, 'phi/F')
+    tree.Branch('eta', eta, 'eta/F')
     tree.Branch('charge', charge, 'charge/I')
     tree.Branch('type', type, 'type/I')
     tree.Branch('nEvent', nEvent, 'nEvent/I')
@@ -136,9 +137,9 @@ if __name__ == "__main__":
             xmnom[0] = track.lxm[len(track.lxm)-1]
             ymnom[0] = track.lym[len(track.lym)-1]
             zmnom[0] = track.lzm[len(track.lzm)-1]
-            xgmnom[0] = track.xm[len(track.xm)-1]
-            ygmnom[0] = track.ym[len(track.ym)-1]
-            zgmnom[0] = track.zm[len(track.zm)-1]   
+            xgmnom[0] = track.xi[len(track.xi)-1]
+            ygmnom[0] = track.yi[len(track.yi)-1]
+            zgmnom[0] = track.zi[len(track.zi)-1]   
             sidenom[0] = (track.subdet[len(track.subdet)-1])[0]
             traynom[0] = track.subdet[len(track.subdet)-1][1]
             RUTypenom[0] = track.subdet[len(track.subdet)-1][2]
