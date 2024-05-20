@@ -291,7 +291,8 @@ class BTL:
         track.lxm = np.concatenate((track.lxm, lx_meas), axis=0)
         track.lym = np.concatenate((track.lym, ly_meas), axis=0)
         track.lzm = np.concatenate((track.lzm, lz_meas), axis=0)
-        
+        if not module.isInside(localVector):
+            return False
         return True
       
 
