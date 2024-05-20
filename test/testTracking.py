@@ -42,7 +42,7 @@ if __name__ == "__main__":
     ax4.set_ylabel('x [cm]')
 
     #configuring the tracker
-    layers = np.linspace(1, 100, 20)
+    layers = np.linspace(1, 114, 20)
     layersz = np.linspace(130, 270, 5)
     sigma_rphi = 0.01
     sigma_z = 0.01
@@ -54,7 +54,7 @@ if __name__ == "__main__":
     #etl.draw(ax1, ax2, ax3, 'g')
     
     #Configuring the BTL
-    R = 120.0
+    R = 114.8
     TrayLength = 300.0
     TrayWidth = 2.0*R*np.sin(3.0*np.pi/180.0)
     TrayStartZ = 1.0

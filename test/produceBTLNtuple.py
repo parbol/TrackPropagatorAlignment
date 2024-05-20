@@ -22,14 +22,14 @@ if __name__ == "__main__":
     (opts, args) = parser.parse_args()
 
     #configuring the tracker
-    layers = np.linspace(1, 100, 20)
+    layers = np.linspace(3, 114, num=20)
     layersz = np.linspace(130, 270, 5)
-    sigma_rphi = 0.01
-    sigma_z = 0.01
+    sigma_rphi = 0.312/np.sqrt(12.00)
+    sigma_z = 0.3
     tracker = Tracker(layers, layersz, sigma_rphi, sigma_z, 220.0, [0,0,0])
    
     #Configuring the BTL
-    R = 120.0
+    R = 114.8
     TrayLength = 300.0
     TrayWidth = 2.0*R*np.sin(3.0*np.pi/180.0)
     TrayStartZ = 1.0
