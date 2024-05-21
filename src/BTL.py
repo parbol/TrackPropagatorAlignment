@@ -94,7 +94,22 @@ class BTL:
             tray = BTLTray(btl, t[0], t[1], t[2], eulerAngles[i], self.TrayWidth, self.TrayLength, self.RULength, self.ModuleLength, self.ModuleWidth)
             self.mTrays.append(tray)
                 
-   
+        self.pTraysNom = []
+        self.mTraysNom = []
+        for i, t in enumerate(positiveTrays):
+            btl = BTLId()
+            btl.setTray(i)
+            btl.setSide(1)
+            tray = BTLTray(btl, t[0], t[1], t[2], eulerAngles[i], self.TrayWidth, self.TrayLength, self.RULength, self.ModuleLength, self.ModuleWidth)
+            self.pTraysNom.append(tray)
+        for i, t in enumerate(negativeTrays):
+            btl = BTLId()
+            btl.setTray(i)
+            btl.setSide(-1)
+            tray = BTLTray(btl, t[0], t[1], t[2], eulerAngles[i], self.TrayWidth, self.TrayLength, self.RULength, self.ModuleLength, self.ModuleWidth)
+            self.mTraysNom.append(tray)
+
+            
     def getClosestTray(self, phi, trays):
         
         index = -1
