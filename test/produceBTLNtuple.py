@@ -40,42 +40,33 @@ if __name__ == "__main__":
     rphi_error = 0.1
     z_error = 0.1
     t_error = 0.1
-    btlAligned = BTL(R, TrayLength, TrayWidth, TrayStartZ, TrayStartPhi, RULength, ModuleLength, ModuleWidth, rphi_error, z_error, t_error, 9.4)
-    btlMisaligned = BTL(R, TrayLength, TrayWidth, TrayStartZ, TrayStartPhi, RULength, ModuleLength, ModuleWidth, rphi_error, z_error, t_error, 9.4)
-    btlMisaligned.readGeometry('btlUpdatedGeometry.txt')
+    btl = BTL(R, TrayLength, TrayWidth, TrayStartZ, TrayStartPhi, RULength, ModuleLength, ModuleWidth, rphi_error, z_error, t_error, 9.4)
+    #btl.btlReal.readGeometry('btlUpdatedGeometry.txt')
     
-
     pt = array('f', [0])
     phi = array('f', [0])
     eta = array('f', [0])
     charge = array('i', [0])
     type = array('i', [0])
     nEvent = array('i', [0])
-    sidenom = array('i', [0])
-    traynom = array('i', [0])
-    RUTypenom = array('i', [0])
-    RUNumbernom = array('i', [0])
-    modulenom = array('i', [0])
-    sidemis = array('i', [0])
-    traymis = array('i', [0])
-    RUTypemis = array('i', [0])
-    RUNumbermis = array('i', [0])
-    modulemis = array('i', [0])
-    xenom = array('f', [0])
-    yenom = array('f', [0])
-    zenom = array('f', [0])
-    xemis = array('f', [0])
-    yemis = array('f', [0])
-    zemis = array('f', [0])
-    xmnom = array('f', [0])
-    ymnom = array('f', [0])
-    zmnom = array('f', [0])
-    xmmis = array('f', [0])
-    ymmis = array('f', [0])
-    zmmis = array('f', [0])
-    xgmnom = array('f', [0])
-    ygmnom = array('f', [0])
-    zgmnom = array('f', [0])
+    side = array('i', [0])
+    tray = array('i', [0])
+    RUType = array('i', [0])
+    RUNumber = array('i', [0])
+    module = array('i', [0])
+    xe = array('f', [0])
+    ye = array('f', [0])
+    ze = array('f', [0])
+    xge = array('f', [0])
+    yge = array('f', [0])
+    zge = array('f', [0])
+    x = array('f', [0])
+    y = array('f', [0])
+    z = array('f', [0])
+    xg = array('f', [0])
+    yg = array('f', [0])
+    zg = array('f', [0])
+    
     tree = r.TTree("hits", "hits")
     tree.Branch('pt', pt, 'pt/F')
     tree.Branch('phi', phi, 'phi/F')
@@ -83,31 +74,24 @@ if __name__ == "__main__":
     tree.Branch('charge', charge, 'charge/I')
     tree.Branch('type', type, 'type/I')
     tree.Branch('nEvent', nEvent, 'nEvent/I')
-    tree.Branch('sidenom', sidenom, 'sidenom/I')
-    tree.Branch('traynom', traynom, 'traynom/I')
-    tree.Branch('RUTypenom', RUTypenom, 'RUTypenom/I')
-    tree.Branch('RUNumbernom', RUNumbernom, 'RUNumbernom/I')
-    tree.Branch('modulenom', modulenom, 'modulenom/I')
-    tree.Branch('sidemis', sidemis, 'sidemis/I')
-    tree.Branch('traymis', traymis, 'traymis/I')
-    tree.Branch('RUTypemis', RUTypemis, 'RUTypemis/I')
-    tree.Branch('RUNumbermis', RUNumbermis, 'RUNumbermis/I')
-    tree.Branch('modulemis', modulemis, 'modulemis/I')
-    tree.Branch('xenom', xenom, 'xenom/F')
-    tree.Branch('yenom', yenom, 'yenom/F')
-    tree.Branch('zenom', zenom, 'zenom/F')
-    tree.Branch('xemis', xemis, 'xemis/F')
-    tree.Branch('yemis', yemis, 'yemis/F')
-    tree.Branch('zemis', zemis, 'zemis/F')
-    tree.Branch('xmnom', xmnom, 'xmnom/F')
-    tree.Branch('ymnom', ymnom, 'ymnom/F')
-    tree.Branch('zmnom', zmnom, 'zmnom/F')
-    tree.Branch('xmmis', xmmis, 'xmmis/F')
-    tree.Branch('ymmis', ymmis, 'ymmis/F')
-    tree.Branch('zmmis', zmmis, 'zmmis/F')
-    tree.Branch('xgmnom', xgmnom, 'xgmnom/F')
-    tree.Branch('ygmnom', ygmnom, 'ygmnom/F')
-    tree.Branch('zgmnom', zgmnom, 'zgmnom/F')
+    tree.Branch('side', side, 'side/I')
+    tree.Branch('tray', tray, 'tray/I')
+    tree.Branch('RUType', RUType, 'RUType/I')
+    tree.Branch('RUNumber', RUNumber, 'RUNumber/I')
+    tree.Branch('module', module, 'module/I')
+    tree.Branch('xe', xe, 'xe/F')
+    tree.Branch('ye', ye, 'ye/F')
+    tree.Branch('ze', ze, 'ze/F')
+    tree.Branch('xge', xge, 'xge/F')
+    tree.Branch('yge', yge, 'yge/F')
+    tree.Branch('zge', zge, 'zge/F')
+    tree.Branch('x', x, 'x/F')
+    tree.Branch('y', y, 'y/F')
+    tree.Branch('z', z, 'z/F')
+    tree.Branch('xg', xg, 'xg/F')
+    tree.Branch('yg', yg, 'yg/F')
+    tree.Branch('zg', zg, 'zg/F')
+
     counter = 0
     alist = []
     while counter < int(opts.nTracks):
@@ -117,52 +101,35 @@ if __name__ == "__main__":
         pt_ = np.random.uniform(2.0, 20.0)
         charge_ = int(np.sign(np.random.uniform(-1.0, 1.0)))
         track = Track(0, 0, phi_, eta_, pt_, charge_)
-        track2 = Track(0, 0, phi_, eta_, pt_, charge_)
         tracker.fullMeasurement(track)
-        validAligned = btlAligned.fullMeasurement(track)
-        tracker.fullMeasurement(track2)
-        validMisaligned = btlMisaligned.fullMeasurement(track2)
+        valid = btl.fullMeasurement(track)
+        if not valid:
+            continue
         pt[0] = pt_
         phi[0] = phi_
         eta[0] = eta_
         nEvent[0] = counter
         charge[0] = charge_
-        if not validAligned and not validMisaligned:
-            continue
-        if validAligned:
-            type[0] = 0
-            xenom[0] = track.lxi[len(track.lxi)-1]
-            yenom[0] = track.lyi[len(track.lyi)-1]
-            zenom[0] = track.lzi[len(track.lzi)-1]
-            xmnom[0] = track.lxm[len(track.lxm)-1]
-            ymnom[0] = track.lym[len(track.lym)-1]
-            zmnom[0] = track.lzm[len(track.lzm)-1]
-            xgmnom[0] = track.xi[len(track.xi)-1]
-            ygmnom[0] = track.yi[len(track.yi)-1]
-            zgmnom[0] = track.zi[len(track.zi)-1]   
-            sidenom[0] = (track.subdet[len(track.subdet)-1])[0]
-            traynom[0] = track.subdet[len(track.subdet)-1][1]
-            RUTypenom[0] = track.subdet[len(track.subdet)-1][2]
-            RUNumbernom[0] = track.subdet[len(track.subdet)-1][3]
-            modulenom[0] = track.subdet[len(track.subdet)-1][4]
+       
+        type[0] = 0
+        xe[0] = track.lxi[len(track.lxi)-1]
+        ye[0] = track.lyi[len(track.lyi)-1]
+        ze[0] = track.lzi[len(track.lzi)-1]
+        x[0] = track.lxm[len(track.lxm)-1]
+        y[0] = track.lym[len(track.lym)-1]
+        z[0] = track.lzm[len(track.lzm)-1]
+        xge[0] = track.xi[len(track.xi)-1]
+        yge[0] = track.yi[len(track.yi)-1]
+        zge[0] = track.zi[len(track.zi)-1]
+        xg[0] = track.lxm[len(track.xm)-1]
+        yg[0] = track.lym[len(track.ym)-1]
+        zg[0] = track.lzm[len(track.zm)-1]   
+        side[0] = (track.subdet[len(track.subdet)-1])[0]
+        tray[0] = track.subdet[len(track.subdet)-1][1]
+        RUType[0] = track.subdet[len(track.subdet)-1][2]
+        RUNumber[0] = track.subdet[len(track.subdet)-1][3]
+        module[0] = track.subdet[len(track.subdet)-1][4]
 
-        if validMisaligned:
-            type[0] = 1
-            xemis[0] = track2.lxi[len(track.lxi)-1]
-            yemis[0] = track2.lyi[len(track.lyi)-1]
-            zemis[0] = track2.lzi[len(track.lzi)-1]
-            xmmis[0] = track2.lxm[len(track.lxm)-1]
-            ymmis[0] = track2.lym[len(track.lym)-1]
-            zmmis[0] = track2.lzm[len(track.lzm)-1]
-            sidemis[0] = track2.subdet[len(track2.subdet)-1][0]
-            traymis[0] = track2.subdet[len(track2.subdet)-1][1]
-            RUTypemis[0] = track2.subdet[len(track2.subdet)-1][2]
-            RUNumbermis[0] = track2.subdet[len(track2.subdet)-1][3]
-            modulemis[0] = track2.subdet[len(track2.subdet)-1][4]
-
-        if validAligned and validMisaligned:
-            type[0] = 3 
-        
         tree.Fill()
         counter = counter + 1
            

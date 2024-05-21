@@ -65,8 +65,8 @@ if __name__ == "__main__":
     rphi_error = 0.1
     z_error = 0.1
     t_error = 0.1
-    btlAligned = BTL(R, TrayLength, TrayWidth, TrayStartZ, TrayStartPhi, RULength, ModuleLength, ModuleWidth, rphi_error, z_error, t_error, 9.4)
-    btlAligned.draw(ax1, ax2, ax3, ax4, 'g')
+    btl = BTL(R, TrayLength, TrayWidth, TrayStartZ, TrayStartPhi, RULength, ModuleLength, ModuleWidth, rphi_error, z_error, t_error, 9.4)
+    btl.btlReal.draw(ax1, ax2, ax3, ax4, 'g')
     #btlMisaligned.draw(ax1, ax2, ax3, ax4, 'g')
     #etl.draw(ax1, ax2, ax3, 'g')
 
@@ -84,7 +84,7 @@ if __name__ == "__main__":
         charge = np.sign(np.random.uniform(-1.0, 1.0))
         track = Track(0, 0, phi, eta, pt, charge)
         tracker.fullMeasurement(track)
-        validAligned = btlAligned.fullMeasurement(track)
+        validAligned = btl.fullMeasurement(track)
         if validAligned:
             track.plot_track(ax1, ax2, ax3, ax4, 'r')
             track.plot_measurements(ax1, ax2, ax3, ax4, 'y*')
