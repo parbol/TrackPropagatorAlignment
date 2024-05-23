@@ -96,9 +96,11 @@ if __name__ == "__main__":
     alist = []
     while counter < int(opts.nTracks):
 
-        phi_ = np.random.uniform(np.pi/2.0 - 0, 2.0*np.pi)
+        if counter % 10000 == 0:
+            print(counter*100.0/int(opts.nTracks))
+        phi_ = np.random.uniform(0, 2.0*np.pi)
         #phi_ = np.random.uniform(5.0*np.pi/180.0, 5.0*np.pi/180.0 + 4.0*np.pi/180.0)
-        eta_ = np.random.uniform(-1.6, 1.6)
+        eta_ = np.random.uniform(-1.7, 1.7)
         #pt_ = np.random.uniform(26.0, 50.0)
         pt_ = np.random.triangular(15.0, 38, 50.0)
         if pt_ < 26 or pt_ > 50.0:
