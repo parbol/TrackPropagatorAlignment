@@ -38,7 +38,7 @@ if __name__ == "__main__":
     ModuleLength = 5.4
     ModuleWidth = 4.0
     rphi_error = 0.1
-    z_error = 0.1
+    z_error = 0.4
     t_error = 0.1
     btl = BTL(R, TrayLength, TrayWidth, TrayStartZ, TrayStartPhi, RULength, ModuleLength, ModuleWidth, rphi_error, z_error, t_error, 9.4)
     btl.btlReal.readGeometry('btlUpdatedGeometry.txt')
@@ -96,10 +96,13 @@ if __name__ == "__main__":
     alist = []
     while counter < int(opts.nTracks):
 
-        #phi_ = np.random.uniform(np.pi/2.0 - 0, 2.0*np.pi)
-        phi_ = np.random.uniform(5.0*np.pi/180.0, 5.0*np.pi/180.0 + 4.0*np.pi/180.0)
-        eta_ = np.random.uniform(0, 0.2)
-        pt_ = np.random.uniform(10.0, 50.0)
+        phi_ = np.random.uniform(np.pi/2.0 - 0, 2.0*np.pi)
+        #phi_ = np.random.uniform(5.0*np.pi/180.0, 5.0*np.pi/180.0 + 4.0*np.pi/180.0)
+        eta_ = np.random.uniform(-1.6, 1.6)
+        #pt_ = np.random.uniform(26.0, 50.0)
+        pt_ = np.random.triangular(15.0, 38, 50.0)
+        if pt_ < 26 or pt_ > 50.0:
+            continue
         charge_ = int(np.sign(np.random.uniform(-1.0, 1.0)))
         track = Track(0, 0, phi_, eta_, pt_, charge_)
         tracker.fullMeasurement(track)
