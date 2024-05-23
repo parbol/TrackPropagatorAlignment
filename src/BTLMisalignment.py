@@ -18,7 +18,7 @@ class BTLMisalignment:
 
     def randomLocalMisalignment(self, sigmax, sigmay):
 
-        trays = self.btl.pTrays + self.btl.mTrays
+        trays = self.btl.btlNominal.pTrays + self.btl.btlNominal.mTrays
         f = open(self.misalignmentName, 'w')
         for tray in trays:
             for ru in tray.RUs:
@@ -27,8 +27,7 @@ class BTLMisalignment:
                     displacementY = np.random.normal(0, sigmay)
                     disp = np.asarray([displacementX, displacementY, 0.0])
                     newpos = module.module.toGlobal(disp)
-                    euler = EulerRotation(0.0, 0.0, 0.0)
-                    module.updatePosition(newpos, euler)
+                    module.updatePosition(newpos, module.module.eulerAngles)
                     cad = '{side} {tray} {RUType} {RUNumber} {module} {dx} {dy}'.format(side = str(module.btlId.side),
                                                                   tray = str(module.btlId.tray),
                                                                   RUType = str(module.btlId.RUType),
@@ -38,4 +37,4 @@ class BTLMisalignment:
                                                                   dy = displacementY)
                     f.write(cad + '\n')
         f.close()
-        self.btl.writeGeometry(self.btlName)
+        self.btl.btlNominal.writeGeometry(self.btlName)

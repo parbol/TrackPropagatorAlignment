@@ -8,7 +8,7 @@ from src.BTLMisalignment import BTLMisalignment
 if __name__ == "__main__":
  
     #Configuring the BTL
-    R = 120.0
+    R = 114.8
     TrayLength = 300.0
     TrayWidth = 2.0*R*np.sin(3.0*np.pi/180.0)
     TrayStartZ = 1.0
@@ -21,4 +21,4 @@ if __name__ == "__main__":
     t_error = 0.1
     btl = BTL(R, TrayLength, TrayWidth, TrayStartZ, TrayStartPhi, RULength, ModuleLength, ModuleWidth, rphi_error, z_error, t_error, 9.4)
     misa = BTLMisalignment(btl, 'misalignemnts.txt', 'btlUpdatedGeometry.txt')
-    misa.randomLocalMisalignment(0.5, 0.5)
+    misa.randomLocalMisalignment(0.2, 0.2)

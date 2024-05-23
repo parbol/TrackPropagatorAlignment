@@ -18,7 +18,6 @@ class Module:
 
         z = np.asarray([0.0, 0.0, 1.0])
         n = self.eulerAngles.apply(z)
-
         self.pLLlocal = np.asarray([-Lx/2.0, -Ly/2.0, 0.0]) 
         self.pLRlocal = np.asarray([Lx/2.0, -Ly/2.0, 0.0]) 
         self.pULlocal = np.asarray([-Lx/2.0, Ly/2.0, 0.0]) 
