@@ -53,13 +53,13 @@ def getHisto(t, side, tray, runumber, rutype, module, ptmin, ptmax, var):
    
     return h, mu, sigma, emu
 
-def plotResidual(t, side, tray, runumber, rutype, module, ptmin, ptmax, var):
+def plotResidual(t, side, tray, runumber, rutype, module, ptmin, ptmax, var, tag):
 
     name = 'residual_' + var + '_' + str(side) + '_' + str(tray) + '_' + str(runumber) + '_' + str(rutype) + '_' + str(module) + '_' + str(ptmin) + '_' + str(ptmax)
     h, mu, sigma, emu = getHisto(t, side, tray, runumber, rutype, module, ptmin, ptmax, var)
     c = r.TCanvas('can_' + name)
     h.Draw()
-    c.SaveAs(name + '.png')
+    c.SaveAs(name + '_' + tag + '.png')
     return mu, sigma, emu
 
 def makePtPlot(t, side, tray, runnumber, rutype, module, var):
@@ -94,73 +94,107 @@ if __name__=='__main__':
     t_error = 0.1
     btl = BTL(R, TrayLength, TrayWidth, TrayStartZ, TrayStartPhi, RULength, ModuleLength, ModuleWidth, rphi_error, z_error, t_error, 9.4)
     
-    f = r.TFile('output1M.root')
-    t = f.Get('hits')
-    
-    #plotEtaPt(t)
-    
-    #Make resolution study
-    ruType = [0, 1, 2]
-    ruNumber = [0, 1]
-    module = [0, 3, 6, 9, 12, 15, 18, 21]
-
-    zx = array('d')
-    zy = array('d')
-    ex = array('d')
-    ey = array('d')
-
-    for ruT in ruType:
-         for ruN in ruNumber:
-              for mod in module:
-                id = BTLId()
-                id.setSide(1)
-                id.setTray(12)
-                id.setRU(ruT, ruN)
-                id.setModule(mod)
-                modulaco = btl.btlNominal.getBTLModule(id)
-                mux, sigmax, emux = plotResidual(t, 1, 12, ruN, ruT, mod, 0, 100, 'x')
-                muy, sigmay, emuy = plotResidual(t, 1, 12, ruN, ruT, mod, 0, 100, 'y')
-                if sigmax > 0:
-                    zx.append(modulaco.r[2])
-                    ex.append(emux)
-                if sigmay > 0:
-                    zy.append(modulaco.r[2])
-                    ey.append(emuy)
-
+    files = ['output1M.root', 'output0.75M.root', 'output0.5M.root', 'output0.25M.root']
+    tags = ['1M', '0.75M', '0.5M', '0.25M']
+    #files = ['output1M.root', 'output0.75M.root']
+    #tags = ['1M', '0.75M']
+    colors = [r.kRed, r.kBlue, r.kGreen, r.kBlack]
+    legx = r.TLegend(0.75, 0.7, 0.9, 0.85)
+    legx.SetFillColor(r.kWhite)
+    legx.SetTextFont(42)
+    legx.SetTextSize(0.04)
+    legx.SetLineWidth(0)
+    legx.SetBorderSize(0)
+    legy = r.TLegend(0.75, 0.7, 0.9, 0.85)
+    legy.SetFillColor(r.kWhite)
+    legy.SetTextFont(42)
+    legy.SetTextSize(0.04)
+    legy.SetLineWidth(0)
+    legy.SetBorderSize(0)
     auxX = r.TH1F('auxX', '', 1, 0, 350)
     auxX.GetXaxis().SetTitle("Module Z [cm]")
     auxX.GetYaxis().SetTitle("X uncertainty [cm]")
     auxX.SetStats(0)
     auxX.SetTitle('X uncertainty vs. module Z')
-    auxX.GetYaxis().SetRangeUser(0, 0.05)
+    auxX.GetYaxis().SetRangeUser(0, 0.5)
     auxY = r.TH1F('auxY', '', 1, 0, 350)
     auxY.GetXaxis().SetTitle("Module Z [cm]")
     auxY.GetYaxis().SetTitle("Y uncertainty [cm]")
     auxY.SetStats(0)
     auxY.SetTitle('Y uncertainty vs. module Z')
     auxY.GetYaxis().SetRangeUser(0, 0.3)
-    grx = r.TGraph(len(zx), zx, ex)
-    gry = r.TGraph(len(zy), zy, ey)
+    grxs = []
+    grys = []
+
+    for i, fg in enumerate(files):
+
+        f = r.TFile(fg)
+        tag = tags[i]
+        ccolor = colors[i]
+        t = f.Get('hits')
+    
+        #plotEtaPt(t)
+    
+        #Make resolution study
+        ruType = [0, 1, 2]
+        ruNumber = [0, 1]
+        module = [0, 3, 6, 9, 12, 15, 18, 21]
+
+        zx = array('d')
+        zy = array('d')
+        ex = array('d')
+        ey = array('d')
+
+        for ruT in ruType:
+            for ruN in ruNumber:
+                for mod in module:
+                    id = BTLId()
+                    id.setSide(1)
+                    id.setTray(12)
+                    id.setRU(ruT, ruN)
+                    id.setModule(mod)
+                    modulaco = btl.btlNominal.getBTLModule(id)
+                    mux, sigmax, emux = plotResidual(t, 1, 12, ruN, ruT, mod, 0, 100, 'x', tag)
+                    muy, sigmay, emuy = plotResidual(t, 1, 12, ruN, ruT, mod, 0, 100, 'y', tag)
+                    if sigmax > 0:
+                        zx.append(modulaco.r[2])
+                        ex.append(emux)
+                    if sigmay > 0:
+                        zy.append(modulaco.r[2])
+                        ey.append(emuy)
+
+        
+        grx = r.TGraph(len(zx), zx, ex)
+        gry = r.TGraph(len(zy), zy, ey)
+        legx.AddEntry(grx, tag, "P")
+        legy.AddEntry(gry, tag, "P")
+        grx.GetXaxis().SetTitle("Module Z [cm]")
+        grx.GetYaxis().SetTitle("X uncertainty [cm]")
+        gry.GetXaxis().SetTitle("Module Z [cm]")
+        gry.GetYaxis().SetTitle("Y uncertainty [cm]")
+        grx.SetMarkerColor(ccolor)
+        grx.SetMarkerSize(1)
+        grx.SetMarkerStyle(20)
+        gry.SetMarkerColor(ccolor)
+        gry.SetMarkerSize(1)
+        gry.SetMarkerStyle(20)
+        grx.SetTitle('Uncertainty vs. module Z')
+        gry.SetTitle('Uncertainty vs. module Z')
+        grxs.append(grx)
+        grys.append(gry)
+    
     c = r.TCanvas('canx')
-    grx.GetXaxis().SetTitle("Module Z [cm]")
-    grx.GetYaxis().SetTitle("X uncertainty [cm]")
-    gry.GetXaxis().SetTitle("Module Z [cm]")
-    gry.GetYaxis().SetTitle("Y uncertainty [cm]")
-    grx.SetMarkerColor(r.kRed)
-    grx.SetMarkerSize(1)
-    grx.SetMarkerStyle(20)
-    gry.SetMarkerColor(r.kBlue)
-    gry.SetMarkerSize(1)
-    gry.SetMarkerStyle(20)
-    grx.SetTitle('Uncertainty vs. module Z')
-    gry.SetTitle('Uncertainty vs. module Z')
     auxX.Draw()
-    grx.Draw('P')
+    for gr in grxs:
+        gr.Draw('P')
+    legx.Draw()
     c.SaveAs('plotx.png')
     cy = r.TCanvas('cany')
     auxY.Draw()
-    gry.Draw('P')
+    for gr in grys:
+        gr.Draw('P')
+    legy.Draw()
     cy.SaveAs('ploty.png')    
 
 
-    #makePtPlot(t, 1, 0, 0, 0, 0, 'x')
+    

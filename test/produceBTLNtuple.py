@@ -37,8 +37,8 @@ if __name__ == "__main__":
     RULength = 45.0
     ModuleLength = 5.4
     ModuleWidth = 4.0
-    rphi_error = 0.1
-    z_error = 0.4
+    rphi_error = 0.3
+    z_error = 0.1
     t_error = 0.1
     btl = BTL(R, TrayLength, TrayWidth, TrayStartZ, TrayStartPhi, RULength, ModuleLength, ModuleWidth, rphi_error, z_error, t_error, 9.4)
     btl.btlReal.readGeometry('btlUpdatedGeometry.txt')
