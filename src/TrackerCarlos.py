@@ -20,10 +20,12 @@ class LayerCarlos:
         self.t_error = tError
         
         self.phiStep = 2.0*np.pi / N
-        self.Lx = np.tan(phiStep/2.0) * self.R * 2.0
-        
+
+        self.Lx = np.tan(self.phiStep/2.0) * self.R * 2.0
+        self.Ly = Ly
+        self.modules = []
         for i in range(0, N):
-            phi = self.ModulesStartPhi + self.phiStep / 2.0 + i * self.phiStep
+            phi = self.ModuleStartPhi + self.phiStep / 2.0 + i * self.phiStep
             x = self.R * np.cos(phi)
             y = self.R * np.sin(phi)
             z = 0.0
@@ -32,14 +34,64 @@ class LayerCarlos:
             vz = np.asarray([np.cos(phi), np.sin(phi), 0.0])
             euler = EulerRotation()
             euler.setFromVectors(vx, vy, vz)
-            mod = Module(np.asarray([x, y, z]), euler, )
-           
+            mod = Module(np.asarray([x, y, z]), euler, self.Lx, self.Ly)
+            self.modules.append(mod)
+
+
+    def getPhi(self, x, y):
         
+        sinphi = (y/np.sqrt(x**2+y**2)) 
+        cosphi = (x/np.sqrt(x**2+y**2))
+        if cosphi > 1.0:
+            cosphi = 1.0
+        if cosphi < -1.0:
+            cosphi = -1.0
+        if sinphi >= 0:
+            return np.arccos(cosphi)
+        else:
+            return -np.arccos(cosphi) + 2.0*np.pi
+
+    def getClosestModule(self, phi):
+        
+        index = -1
+        minPhi = 9999999.0
+        for j, i in enumerate(self.modules):
+            modphi = self.getPhi(i.x[0], i.x[1])
+            if np.abs(modphi-phi) < minPhi:
+                minPhi = np.abs(modphi-phi)
+                index = j
+        return index
+
+    
+    def intersection(self, track):
+
+        phi = track.phi
+        eta = track.eta
+        
+        moduleNumber = self.getClosestModule(phi)
+        navigationWindow = 2
+        navigationList = []
+        for i in range(0, navigationWindow+1):
+            navigationList.append(i)
+            if i != 0:
+                navigationList.append(-i)
+        for i in navigationList:
+            checkModuleNumber = (moduleNumber + i) % self.N
+            valid, x, y, z, t = self.modules[checkModuleNumber].intersection(track)
+            if valid:
+                return True, x, y, z, t
+        return False, 0, 0, 0, 0
+
+
+    def draw(self, ax1, ax2, ax3, ax4, t):
+
+        for m in self.modules:
+            m.drawModule(ax1, ax2, ax3, ax4, t, alpha=0.1)
 
 
 class TrackerCarlos:
     
-    def __init__(self, R, ModuleLength, N, ModuleStartPhi, rphiError, zError, tError):
+    def __init__(self, R, ModuleLength, N, ModuleStartPhi, Ly, rphiError, zError, tError):
 
         ####################################################################################################
         #                                   Representation of a Carlos Tracker                             #
@@ -58,267 +110,56 @@ class TrackerCarlos:
         self.rphi_error = rphiError
         self.z_error = zError
         self.t_error = tError
+        self.Ly = Ly
         
-        phiStep = 2.0*np.pi / N
-
-        modulePhi = []
-        for i in range(0, N):
-            modulePhi.append(self.ModulesStartPhi + phiStep / 2.0 + i * phiStep)
-
-        for 
-        positiveTrays = []
-        negativeTrays = []
-        eulerAngles = []
-        for i in range(0, 18):
-            phi = self.TrayStartPhi + self.anglePerTray/2.0 + i * (self.anglePerTray+self.traySpace)
-            x = self.R * np.cos(phi)
-            y = self.R * np.sin(phi)
-            vx = np.asarray([np.sin(phi), -np.cos(phi), 0.0])
-            vy = np.asarray([0.0, 0.0, 1.0])
-            vz = np.asarray([np.cos(phi), np.sin(phi), 0.0])
-            zp = self.zOfPositiveTrays
-            zm = self.zOfNegativeTrays
-            euler = EulerRotation()
-            euler.setFromVectors(vx, vy, vz)
-            eulerAngles.append(euler)
-            positiveTrays.append([x, y, zp])
-            negativeTrays.append([x, y, zm])
-        
-        for i in range(18, 36):
-            phi = np.pi + self.TrayStartPhi + self.anglePerTray/2.0 + (i-18) * (self.anglePerTray+self.traySpace)
-            x = self.R * np.cos(phi)
-            y = self.R * np.sin(phi)
-            vx = np.asarray([np.sin(phi), -np.cos(phi), 0.0])
-            vy = np.asarray([0.0, 0.0, 1.0])
-            vz = np.asarray([np.cos(phi), np.sin(phi), 0.0])
-            euler = EulerRotation()
-            euler.setFromVectors(vx, vy, vz)
-            eulerAngles.append(euler)
-            zp = self.zOfPositiveTrays
-            zm = self.zOfNegativeTrays
-            positiveTrays.append([x, y, zp])
-            negativeTrays.append([x, y, zm])
-
-        self.pTrays = []
-        self.mTrays = []
-        for i, t in enumerate(positiveTrays):
-            btl = BTLId()
-            btl.setTray(i)
-            btl.setSide(1)
-            tray = BTLTray(btl, t[0], t[1], t[2], eulerAngles[i], self.TrayWidth, self.TrayLength, self.RULength, self.ModuleLength, self.ModuleWidth)
-            self.pTrays.append(tray)
-        for i, t in enumerate(negativeTrays):
-            btl = BTLId()
-            btl.setTray(i)
-            btl.setSide(-1)
-            tray = BTLTray(btl, t[0], t[1], t[2], eulerAngles[i], self.TrayWidth, self.TrayLength, self.RULength, self.ModuleLength, self.ModuleWidth)
-            self.mTrays.append(tray)
-        
-    def getClosestTray(self, phi, trays):
-        
-        index = -1
-        minPhi = 9999999.0
-        for j, i in enumerate(trays):
-            if np.abs(i.phi-phi) < minPhi:
-                minPhi = np.abs(i.phi-phi)
-                index = j
-        return index
-
-
-    def intersection(self, track):
-
-        phi = track.phi
-        eta = track.eta
-        trays = []
-        side = 0
-        if eta >= 0:
-            trays = self.pTrays
-            side = 1
-        else:
-            trays = self.mTrays
-            side = -1
-
-        trayNumber = self.getClosestTray(phi, trays)
-        navigationWindow = 2
-        navigationList = []
-        for i in range(0, navigationWindow+1):
-            navigationList.append(i)
-            if i != 0:
-                navigationList.append(-i)
-        for i in navigationList:
-            checkTrayNumber = (trayNumber + i) % 36
-            valid, id, point = trays[checkTrayNumber].intersection(track)
-            if valid:
-                return True, id, point, [3]
-        return False, [], [], [3]
-
-
-    def getBTLModule(self, detInfo):
-        
-        tray = detInfo.tray
-        side = detInfo.side
-        RU = detInfo.RU
-        module = detInfo.module
-       
-        if side > 0:
-
-            return self.pTrays[tray].RUs[RU].Modules[module]
-        
-        else:
-
-            return self.mTrays[tray].RUs[RU].Modules[module]
-
-
-    def getModule(self, detInfo):
-
-        tray = detInfo.tray
-        side = detInfo.side
-        RU = detInfo.RU
-        module = detInfo.module
-       
-        if side > 0:
-
-            return self.pTrays[tray].RUs[RU].Modules[module].module
-        
-        else:
-
-            return self.mTrays[tray].RUs[RU].Modules[module].module
-
-
-    def writeGeometry(self, fileName):
-
-        f = open(fileName, 'w')
-        for tray in self.pTrays:
-            for ru in tray.RUs:
-                for module in ru.Modules:
-                    module.write(f)
-        for tray in self.mTrays:
-            for ru in tray.RUs:
-                for module in ru.Modules:
-                    module.write(f)
-        f.close()
-
-
-    def readGeometry(self, fileName):
-
-        f = open(fileName)
-        for i in f.readlines():
-            line = i.split()
-            side = int(line[0])
-            tray = int(line[1])
-            RUType = int(line[2])
-            RUNumber = int(line[3])
-            module = int(line[4])
-            btl = BTLId()
-            btl.setSide(side)
-            btl.setTray(tray)
-            btl.setRU(RUType, RUNumber)
-            btl.setModule(module)
-            mod = self.getBTLModule(btl)
-            x = float(line[5])
-            y = float(line[6])
-            z = float(line[7])
-            psi = float(line[8])
-            theta = float(line[9])
-            phi = float(line[10])
-            r = np.asarray([x, y, z])
-            euler = EulerRotation(psi, theta, phi)
-            mod.updatePosition(r, euler)
-        f.close()
-
-    def getScatteringMagnitude(self, dl, betamomentum):
-
-        # This method calculates the real scattering suffered by
-        # the muon when traversing distance dl of the voxel. It
-        # returns the angular deviation and spatial displacement.     
-        cov = self.scattbase/(betamomentum)**2 * np.matrix([[dl, dl*dl/2.0], [dl*dl/2.0, dl*dl*dl/3.0]])
-        angle, disp = np.random.multivariate_normal([0,0], cov, 1)[0].T
-        return angle, disp
+        self.layers = []
+        for i, r in enumerate(self.R):
+            lay = LayerCarlos(r, ModuleLength, N[i], ModuleStartPhi, Ly, rphiError, zError, tError)
+            self.layers.append(lay)
 
     
+    def intersection(self, track):
+
+        xt = []
+        yt = []
+        zt = []
+        tt = []
+        for l in self.layers:
+            valid, x, y, z, t = l.intersection(track)
+            if valid:
+                xt.append(x)
+                yt.append(y)
+                zt.append(z)
+                tt.append(t)
+        if len(xt) != 0:
+            return True, xt, yt, zt, tt
+        else:
+            return False, [], [], [], []
+    
+        
     def fullMeasurement(self, track):
  
         #Intersection
-        status, detInfo, v, det = self.intersection(track)
+        status, xt, yt, zt, tt = self.intersection(track)
         if not status:
             return False
-        x = np.asarray([v[0]])
-        y = np.asarray([v[1]])
-        z = np.asarray([v[2]])
-        t = np.asarray([v[3]])
-
-        xTracker = track.xi[len(track.xi)-1]
-        yTracker = track.yi[len(track.yi)-1]
-        zTracker = track.zi[len(track.zi)-1]
-        vectorTracker = np.asarray([xTracker, yTracker, zTracker])
-
+        x = np.asarray(xt)
+        y = np.asarray(yt)
+        z = np.asarray(zt)
+        t = np.asarray(tt)
         track.xi = np.concatenate((track.xi, x), axis=0)
         track.yi = np.concatenate((track.yi, y), axis=0)
         track.zi = np.concatenate((track.zi, z), axis=0)
         track.ti = np.concatenate((track.ti, t), axis=0)
-        track.det = track.det + det
         
-        module = self.getModule(detInfo)
-        detInfoList = [detInfo.side, detInfo.tray, detInfo.RUType, detInfo.RUNumber, detInfo.module]
-        track.subdet = track.subdet + [detInfoList]
-        globalVector = np.asarray([v[0], v[1], v[2]])
-        localVector = module.toLocal(globalVector)
-        lx = np.asarray([localVector[0]])
-        ly = np.asarray([localVector[1]])
-        lz = np.asarray([localVector[2]])
-        track.lxi = np.concatenate((track.lxi, lx), axis=0)
-        track.lyi = np.concatenate((track.lyi, ly), axis=0)
-        track.lzi = np.concatenate((track.lzi, lz), axis=0)
-        localX = localVector[0]
-        localY = localVector[1]
-
-        #Spatial uncertainty
-        xunc = np.random.normal(0, self.rphi_error)
-        yunc = np.random.normal(0, self.z_error)
-        #Multiple scattering
-        dl = np.linalg.norm(globalVector-vectorTracker)
-        betamomentum = track.betamomentum
-        xangle, xdisp = self.getScatteringMagnitude(dl, betamomentum)
-        yangle, ydisp = self.getScatteringMagnitude(dl, betamomentum)
-        localX += (xunc + xdisp)
-        localY += (yunc + ydisp)
-        localVector[0] = localX
-        localVector[1] = localY
-        newGlobalVector = module.toGlobal(localVector)
-        
-        #Time uncertainty
-        var_t = np.random.normal(0, self.t_error)
-        newt = v[3] + var_t
-
-
-        x_meas = np.asarray([newGlobalVector[0]])
-        y_meas = np.asarray([newGlobalVector[1]])
-        z_meas = np.asarray([newGlobalVector[2]])
-        lx_meas = np.asarray([localVector[0]])
-        ly_meas = np.asarray([localVector[1]])
-        lz_meas = np.asarray([localVector[2]])
-        t_meas = np.asarray([newt])
-        
-
-        track.xm = np.concatenate((track.xm, x_meas), axis=0)
-        track.ym = np.concatenate((track.ym, y_meas), axis=0)
-        track.zm = np.concatenate((track.zm, z_meas), axis=0)
-        track.tm = np.concatenate((track.tm, t_meas), axis=0)
-        track.lxm = np.concatenate((track.lxm, lx_meas), axis=0)
-        track.lym = np.concatenate((track.lym, ly_meas), axis=0)
-        track.lzm = np.concatenate((track.lzm, lz_meas), axis=0)
-        if not module.isInside(localVector):
-            return False
         return True
       
 
-    def draw(self, ax1, ax2, ax3, ax4, t):
+    def plot_tracker(self, ax1, ax2, ax3, ax4, t='b'):
 
-        for m in self.pTrays:
-            m.draw(ax1, ax2, ax3, ax4, t)
-        for m in self.mTrays:
-            m.draw(ax1, ax2, ax3, ax4, t)
-
+        for l in self.layers:
+            l.draw(ax1, ax2, ax3, ax4, t)
+           
 
              
 

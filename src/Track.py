@@ -137,6 +137,7 @@ class Track:
     def plot_track(self, ax1, ax2, ax3, ax4, fmt = 'g'):
               
         #We have all the ingredients, we just need to propagate the track for a given time
+        print(self.ti)
         t = np.linspace(0, self.ti[-1], 200)
         x, y, z = self.eval(t)
         ax1.plot3D(x, z, y, fmt)
