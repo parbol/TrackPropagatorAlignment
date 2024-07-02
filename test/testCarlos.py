@@ -43,18 +43,18 @@ if __name__ == "__main__":
     ax4.set_ylabel('x [cm]')
 
     #configuring the tracker
-    layers = np.asarray([10, 20, 30, 40, 50, 60, 70, 80, 90])
-    N = [7, 8, 9, 10, 11, 12, 13, 14, 15]
+    layers = np.asarray([10, 20, 30, 40, 50, 60, 70, 80, 90, 100])
+    N = [12, 12, 12, 12, 12, 12, 12, 12, 12, 12]
     sigma_rphi = 0.01
     sigma_z = 0.01
-    tracker = TrackerCarlos(layers, 200, N, 0, 200, sigma_rphi, sigma_z, 0.01)
+    tracker = TrackerCarlos(layers, 1100, N, 0, 1100, sigma_rphi, sigma_z, 0.01)
     tracker.plot_tracker(ax1, ax2, ax3, ax4)
     
     counter = 0
     alist = []
-    while counter < 500:
+    while counter < 0:
         phi = np.random.uniform(0.0, 2.0*np.pi)
-        eta = np.random.uniform(-0.7, 0.7)
+        eta = np.random.uniform(-2.7, 2.7)
         pt = np.random.uniform(2.0, 20.0)
         charge = np.sign(np.random.uniform(-1.0, 1.0))
         track = Track(0, 0, phi, eta, pt, charge)

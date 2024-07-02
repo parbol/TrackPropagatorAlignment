@@ -26,8 +26,8 @@ class LayerCarlos:
         self.modules = []
         for i in range(0, N):
             phi = self.ModuleStartPhi + self.phiStep / 2.0 + i * self.phiStep
-            x = self.R * np.cos(phi)
-            y = self.R * np.sin(phi)
+            x = self.R * np.cos(self.phiStep/2.0) * np.cos(phi)
+            y = self.R * np.cos(self.phiStep/2.0) * np.sin(phi)
             z = 0.0
             vx = np.asarray([np.sin(phi), -np.cos(phi), 0.0])
             vy = np.asarray([0.0, 0.0, 1.0])

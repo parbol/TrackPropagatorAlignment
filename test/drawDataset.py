@@ -14,10 +14,10 @@ def drawGraph(dataset, ax1, ax2, ax3, ax4, alpha=0.1):
     
     
     #ax.plot(x[:,0].numpy(), x[:,1].numpy(), 'g*')
-    ax1.plot(x[:,0].numpy(), x[:,1].numpy(), x[:,2].numpy(), 'y*')
+    ax1.plot(x[:,0].numpy(), x[:,2].numpy(), x[:,1].numpy(), 'y*')
     ax2.plot(x[:,0].numpy(), x[:,1].numpy(), 'y*')
-    ax2.plot(x[:,2].numpy(), x[:,1].numpy(), 'y*')
-    ax2.plot(x[:,2].numpy(), x[:,0].numpy(), 'y*')
+    ax3.plot(x[:,2].numpy(), x[:,1].numpy(), 'y*')
+    ax4.plot(x[:,2].numpy(), x[:,0].numpy(), 'y*')
 
 
     edge_index = dataset['source', 'weight', 'target'].edge_index
@@ -34,13 +34,13 @@ def drawGraph(dataset, ax1, ax2, ax3, ax4, alpha=0.1):
             xg.append(x1)
             xg.append(x2)
             yg = []
-            yg.append(z1)
-            yg.append(z2)
+            yg.append(y1)
+            yg.append(y2)
             zg = []
-            zg.append(y1)
-            zg.append(y2)
+            zg.append(z1)
+            zg.append(z2)
             #ax.plot(xg, yg, 'r-')    
-            ax1.plot(xg, yg, zg, 'r-')
+            ax1.plot(xg, zg, yg, 'r-')
             ax2.plot(xg, yg, 'r-')
             ax3.plot(zg, yg, 'r-')
             ax4.plot(zg, xg, 'r-')
@@ -83,11 +83,11 @@ if __name__=='__main__':
     ax4.set_ylabel('x [cm]')
 
     #configuring the tracker
-    layers = np.asarray([10, 20, 30, 40, 50, 60, 70, 80, 90])
-    N = [7, 8, 9, 10, 11, 12, 13, 14, 15]
+    layers = np.asarray([10, 20, 30, 40, 50, 60, 70, 80, 90, 100])
+    N = [12, 12, 12, 12, 12, 12, 12, 12, 12, 12]
     sigma_rphi = 0.01
     sigma_z = 0.01
-    tracker = TrackerCarlos(layers, 200, N, 0, 200, sigma_rphi, sigma_z, 0.01)
+    tracker = TrackerCarlos(layers, 1100, N, 0, 1100, sigma_rphi, sigma_z, 0.01)
     tracker.plot_tracker(ax1, ax2, ax3, ax4)
 
     drawGraph(dataset, ax1, ax2, ax3, ax4)
