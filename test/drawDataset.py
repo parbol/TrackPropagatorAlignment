@@ -14,10 +14,10 @@ def drawGraph(dataset, ax1, ax2, ax3, ax4, alpha=0.1):
     
     
     #ax.plot(x[:,0].numpy(), x[:,1].numpy(), 'g*')
-    ax1.plot(x[:,0].numpy(), x[:,2].numpy(), x[:,1].numpy(), 'y*')
-    ax2.plot(x[:,0].numpy(), x[:,1].numpy(), 'y*')
-    ax3.plot(x[:,2].numpy(), x[:,1].numpy(), 'y*')
-    ax4.plot(x[:,2].numpy(), x[:,0].numpy(), 'y*')
+    ax1.plot(x[:,0].numpy(), x[:,2].numpy(), x[:,1].numpy(), 'b.')
+    ax2.plot(x[:,0].numpy(), x[:,1].numpy(), 'b.')
+    ax3.plot(x[:,2].numpy(), x[:,1].numpy(), 'b.')
+    ax4.plot(x[:,2].numpy(), x[:,0].numpy(), 'b.')
 
 
     edge_index = dataset['source', 'weight', 'target'].edge_index
@@ -40,10 +40,10 @@ def drawGraph(dataset, ax1, ax2, ax3, ax4, alpha=0.1):
             zg.append(z1)
             zg.append(z2)
             #ax.plot(xg, yg, 'r-')    
-            ax1.plot(xg, zg, yg, 'r-')
-            ax2.plot(xg, yg, 'r-')
-            ax3.plot(zg, yg, 'r-')
-            ax4.plot(zg, xg, 'r-')
+            #ax1.plot(xg, zg, yg, 'r-')
+            #ax2.plot(xg, yg, 'r-')
+            #ax3.plot(zg, yg, 'r-')
+            #ax4.plot(zg, xg, 'r-')
 
 
 

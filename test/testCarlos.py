@@ -61,7 +61,7 @@ if __name__ == "__main__":
         valid = tracker.fullMeasurement(track)
         if valid:
             track.plot_track(ax1, ax2, ax3, ax4, 'r')
-            track.plot_intersections(ax1, ax2, ax3, ax4, 'y*')
+            track.plot_intersections(ax1, ax2, ax3, ax4, 'b.')
             counter = counter + 1          
     
     plt.show()
